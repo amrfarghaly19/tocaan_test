@@ -8,6 +8,7 @@ import 'package:gymjoe/diet_screen/diet_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../home/home.dart';
+import '../../profile/profile.dart';
 import '../../workout/workout_screen.dart';
 import '../../workout/workout_types.dart';
 
@@ -39,7 +40,7 @@ class _BottombarState extends State<Bottombar> with TickerProviderStateMixin {
       Home(Token: widget.Token),
       WorkoutPlansPage(Token: widget.Token),
       DietPlanScreen(Token: widget.Token),
-      Home(Token: widget.Token),
+      ProfilePage(Token: widget.Token),
     ];
   }
 

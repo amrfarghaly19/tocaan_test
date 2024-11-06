@@ -2,9 +2,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
+import 'package:gymjoe/files/files_preview.dart';
+import 'package:gymjoe/injures/injures.dart';
+import 'package:gymjoe/medical_cases/medicale_cases.dart';
 import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 
 import '../inbody/inbody_screen.dart';
+import '../measurements/measurements.dart';
 import '../theme/widgets/bottombar.dart';
 /*
 
@@ -684,14 +688,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
     drawerItems = [
       DrawerItem(iconPath: 'assets/svg/ganeral/sheet.svg', title: 'Inbody', navigation: InBody(Token: widget.Token)),
      // DrawerItem(iconPath: 'assets/svg/ganeral/file-upload.svg', title: 'Upload Inbody', navigation: InBody(Token: widget.Token)),
-      DrawerItem(iconPath: 'assets/svg/ganeral/measurements.svg', title: 'Measurements', navigation: InBody(Token: widget.Token)),
-      DrawerItem(iconPath: 'assets/svg/ganeral/update-measurements.svg', title: 'Update Measurements', navigation: InBody(Token: widget.Token)),
-      DrawerItem(iconPath: 'assets/svg/ganeral/bandaid.svg', title: 'Injuries', navigation: InBody(Token: widget.Token)),
-      DrawerItem(iconPath: 'assets/svg/ganeral/medicine.svg', title: 'Medical cases', navigation: InBody(Token: widget.Token)),
+      DrawerItem(iconPath: 'assets/svg/ganeral/measurements.svg', title: 'Measurements', navigation: measurementsPage(Token: widget.Token)),
+      //DrawerItem(iconPath: 'assets/svg/ganeral/update-measurements.svg', title: 'Update Measurements', navigation: InBody(Token: widget.Token)),
+      DrawerItem(iconPath: 'assets/svg/ganeral/bandaid.svg', title: 'Injuries', navigation: Injures(Token: widget.Token)),
+      DrawerItem(iconPath: 'assets/svg/ganeral/medicine.svg', title: 'Medical cases', navigation: MedicalCase(Token: widget.Token)),
       DrawerItem(iconPath: 'assets/svg/ganeral/measurements.svg', title: 'Help', navigation: InBody(Token: widget.Token)),
       DrawerItem(iconPath: 'assets/svg/ganeral/test.svg', title: 'Fitness Test', navigation: InBody(Token: widget.Token)),
       DrawerItem(iconPath: 'assets/svg/ganeral/measurements.svg', title: 'Contact', navigation: InBody(Token: widget.Token)),
-      DrawerItem(iconPath: 'assets/svg/ganeral/folder.svg', title: 'Files', navigation: InBody(Token: widget.Token)),
+      DrawerItem(iconPath: 'assets/svg/ganeral/folder.svg', title: 'Files', navigation: ImageGalleryPage(Token: widget.Token)),
       DrawerItem(iconPath: 'assets/svg/ganeral/setting.svg', title: 'Settings', navigation: InBody(Token: widget.Token)),
     ];
   }
@@ -700,56 +704,64 @@ class _CustomDrawerState extends State<CustomDrawer> {
   Widget build(BuildContext context) {
     return Drawer(
       backgroundColor: Colors.black,
-      child: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: drawerItems.length,
-        itemBuilder: (context, index) {
-          final item = drawerItems[index];
-          return Column(
-            children: [
-              const SizedBox(height: 10),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => item.navigation,
+      child: Column(
+        children: [
+
+          const SizedBox(height: 20),
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: drawerItems.length,
+              itemBuilder: (context, index) {
+                final item = drawerItems[index];
+                return Column(
+                  children: [
+                    const SizedBox(height: 10),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => item.navigation,
+                          ),
+                        );
+                      },
+                      child: Container(
+                        height: 70,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: const Color(0xFF1F1F1F),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.red.withOpacity(0.1), // Neon red glow
+                              blurRadius: 5,
+                              spreadRadius: 1,
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            const SizedBox(width: 8),
+                            SvgPicture.asset(
+                              item.iconPath,
+                              width: 30,
+                              height: 30,
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              item.title,
+                              style: const TextStyle(color: Colors.white, fontSize: 14),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                  );
-                },
-                child: Container(
-                  height: 70,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: const Color(0xFF1F1F1F),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.red.withOpacity(0.1), // Neon red glow
-                        blurRadius: 5,
-                        spreadRadius: 1,
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      const SizedBox(width: 8),
-                      SvgPicture.asset(
-                        item.iconPath,
-                        width: 30,
-                        height: 30,
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        item.title,
-                        style: const TextStyle(color: Colors.white, fontSize: 14),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
+                  ],
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

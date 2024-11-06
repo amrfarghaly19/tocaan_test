@@ -35,8 +35,8 @@ class _LoadingLogoState extends State<LoadingLogo> {
 
   void startFlashing() {
     // Create a Timer to toggle opacity (flashing effect)
-    _flashTimer = Timer.periodic(const Duration(milliseconds: 300), (timer) {
-      if (timer.tick <= 6) { // Flash 3 times (tick is twice per flash)
+    _flashTimer = Timer.periodic(const Duration(milliseconds: 900), (timer) {
+      if (timer.tick <= 50) { // Flash 3 times (tick is twice per flash)
         if (mounted) { // Check if widget is still mounted before calling setState
           setState(() {
             _flashingVisible = !_flashingVisible;
