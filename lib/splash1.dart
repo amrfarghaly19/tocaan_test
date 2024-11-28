@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gymjoe/Auth/login.dart';
 import 'package:gymjoe/splash2.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'moves/fade.dart';
+import 'theme/widgets/bottombar.dart';
 
 class Splash1 extends StatefulWidget {
   const Splash1({Key? key}) : super(key: key);
@@ -32,13 +34,97 @@ class _Splash1State extends State<Splash1> with SingleTickerProviderStateMixin {
       });
 
     });
-    Future.delayed(const Duration(seconds: 6), () {
+ /*   Future.delayed(const Duration(seconds: 6), () {
       print("Navigated");
       Navigator.of(context).push(FadePageRoute(
         page: LoginPage(),
       ));
 
+    });*/
+
+    SplashGo();
+  }
+
+  bool? tutorial, rememberMe;
+  late String Token;
+  String? ID, Name;
+
+  Future<void> SplashGo() async {
+    await Getdatas();
+    if (tutorial == true) {
+      if (rememberMe == false) {
+        Future.delayed(const Duration(seconds: 5), () {
+          //loginpage
+
+          Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => LoginPage()));
+        });
+      } else {
+        //homePage
+        Future.delayed(const Duration(seconds: 5), () {
+          //loginpage
+
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => Bottombar(Token: Token)));
+        });
+      }
+    } else {
+      Future.delayed(const Duration(seconds: 5), () {
+        //loginpage
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => LoginPage()));
+      });
+    }
+
+    /* await Getdatas();
+    if (tutorial == true) {
+      if (rememberMe == false) {
+        Future.delayed(const Duration(seconds: 6), () {
+          Navigator.popAndPushNamed(context,
+            AppRoutes.signInScreen,
+          );
+        });
+      } else {
+        Future.delayed(const Duration(seconds: 6), () {
+          Navigator.popAndPushNamed(context,AppRoutes.homeContainerScreen,
+              arguments: {
+                'ID': ID,
+              });
+        });
+      }
+    } else {
+      Future.delayed(const Duration(seconds: 6), () {
+
+        Navigator.popAndPushNamed(context,
+          AppRoutes.onboardingScreen,
+        );
+      });
+    }
+*/
+
+
+    /* Future.delayed(const Duration(seconds: 9), () {
+      Navigator.popAndPushNamed(context as BuildContext,AppRoutes.splashScreenTwoScreen,
+      );
+
+
+    });*/
+
+  }
+
+  Future<void> Getdatas() async {
+    /* DeciceID =     await DeviceUUid().getUniqueDeviceId();
+    print("DeciceID  DeciceID = $DeciceID");*/
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    rememberMe = prefs.getBool('rememberMe') ?? false;
+    tutorial = prefs.getBool('tutorial') ?? false;
+    ID = prefs.getString('Token') ?? '';
+    Name = prefs.getString('Name') ?? '';
+    setState(() {
+      Token = ID!;
     });
+
+    print("rememberMe =$rememberMe + tutorial = $tutorial, ID = $Token");
   }
 
   void startFlashing() {
@@ -52,6 +138,7 @@ class _Splash1State extends State<Splash1> with SingleTickerProviderStateMixin {
         timer.cancel(); // Stop the flashing after 3 flashes
       }
     });
+
   }
 
   @override
@@ -59,111 +146,111 @@ class _Splash1State extends State<Splash1> with SingleTickerProviderStateMixin {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     print(screenWidth);
-    return Container(
-      color: const Color(0xFF252525),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 1),
-              child: Column(
-                children: [
-                  Stack(
+    return SafeArea(
+      top: false,
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Container(
+          color: Colors.black,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 1),
+                  child: Column(
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                      Stack(
                         children: [
-                          // Left image animation
-                          Flexible(
-                            flex: 1,
-                            child: TweenAnimationBuilder<Offset>(
-                              tween: Tween<Offset>(
-                                begin: const Offset(-1.0, 0.0),
-                                end: const Offset(0.0, 0.0),
-                              ),
-                              duration: const Duration(seconds: 2),
-                              curve: Curves.easeInOut,
-                              builder: (context, offset, child) {
-                                return Transform.translate(
-                                  offset: Offset(offset.dx * MediaQuery.of(context).size.width, 0.0),
-                                  child: Hero(
-                                    tag: 'logo',
-                                    child: Image.asset(
-                                      'assets/2left.png',
-                                      fit: BoxFit.contain,
-                                      width: screenWidth/3,
+                          Hero(
+                            tag: 'logo',
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                // Left image animation
+                                Flexible(
+                                  flex: 1,
+                                  child: TweenAnimationBuilder<Offset>(
+                                    tween: Tween<Offset>(
+                                      begin: const Offset(-1.0, 0.0),
+                                      end: const Offset(0.0, 0.0),
                                     ),
+                                    duration: const Duration(seconds: 2),
+                                    curve: Curves.easeInOut,
+                                    builder: (context, offset, child) {
+                                      return Transform.translate(
+                                        offset: Offset(offset.dx * MediaQuery.of(context).size.width, 0.0),
+                                        child: Image.asset(
+                                          'assets/2left.png',
+                                          fit: BoxFit.contain,
+                                          width: screenWidth/3,
+                                        ),
+                                      );
+                                    },
                                   ),
-                                );
-                              },
+                                ),
+                                // Right image animation
+                                Flexible(
+                                  flex: 1,
+                                  child: TweenAnimationBuilder<Offset>(
+                                    tween: Tween<Offset>(
+                                      begin: const Offset(1.0, 0.0),
+                                      end: const Offset(0.0, 0.0),
+                                    ),
+                                    duration: const Duration(seconds: 2),
+                                    curve: Curves.easeInOut,
+                                    builder: (context, offset, child) {
+                                      return Transform.translate(
+                                        offset: Offset(offset.dx * MediaQuery.of(context).size.width, 0.0),
+                                        child: Image.asset(
+                                          'assets/1right.png',
+                                          fit: BoxFit.contain,
+                                          width: screenWidth/3,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          // Right image animation
-                          Flexible(
-                            flex: 1,
-                            child: TweenAnimationBuilder<Offset>(
-                              tween: Tween<Offset>(
-                                begin: const Offset(1.0, 0.0),
-                                end: const Offset(0.0, 0.0),
-                              ),
-                              duration: const Duration(seconds: 2),
-                              curve: Curves.easeInOut,
-                              builder: (context, offset, child) {
-                                return Transform.translate(
-                                  offset: Offset(offset.dx * MediaQuery.of(context).size.width, 0.0),
-                                  child: Hero(
-                                  tag: 'logo',
-                                    child: Image.asset(
-                                      'assets/1right.png',
-                                      fit: BoxFit.contain,
-                                      width: screenWidth/3,
+                          Center(
+                            child: Transform.translate(
+                              offset: const Offset(0.0, 55.0),
+                              child: TweenAnimationBuilder<Offset>(
+                                tween: Tween<Offset>(
+                                  begin: const Offset(0.0, 1.0),
+                                  end: const Offset(0.0, 0.0),
+                                ),
+                                duration: const Duration(seconds: 2),
+                                curve: Curves.easeInOut,
+                                builder: (context, offset, child) {
+                                  return Transform.translate(
+                                    offset: Offset(0.0, offset.dy * MediaQuery.of(context).size.height),
+                                    child: AnimatedOpacity(
+                                      opacity: _flashingVisible ? 1.0 : 0.0,
+                                      duration: const Duration(milliseconds: 500),
+                                      child: Image.asset(
+                                        'assets/midlogo.png',
+                                        fit: BoxFit.contain,
+                                        width: screenWidth/2 -10,
+                                      ),
                                     ),
-                                  ),
-                                );
-                              },
+                                  );
+                                },
+                              ),
                             ),
                           ),
                         ],
                       ),
-                      Center(
-                        child: Transform.translate(
-                          offset: const Offset(0.0, 55.0),
-                          child: TweenAnimationBuilder<Offset>(
-                            tween: Tween<Offset>(
-                              begin: const Offset(0.0, 1.0),
-                              end: const Offset(0.0, 0.0),
-                            ),
-                            duration: const Duration(seconds: 2),
-                            curve: Curves.easeInOut,
-                            builder: (context, offset, child) {
-                              return Transform.translate(
-                                offset: Offset(0.0, offset.dy * MediaQuery.of(context).size.height),
-                                child: AnimatedOpacity(
-                                  opacity: _flashingVisible ? 1.0 : 0.0,
-                                  duration: const Duration(milliseconds: 500),
-                                  child: Hero(
-                                    tag: 'logo',
-                                    child: Image.asset(
-                                      'assets/midlogo.png',
-                                      fit: BoxFit.contain,
-                                      width: screenWidth/2 -10,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
                     ],
                   ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

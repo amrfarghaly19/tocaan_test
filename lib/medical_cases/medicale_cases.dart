@@ -2,7 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gymjoe/activity/activity_page.dart';
 import 'package:gymjoe/injures/add_injures.dart';
+import 'package:gymjoe/localization/app_localization.dart';
 import 'package:gymjoe/moves/fade.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -38,7 +40,7 @@ class _MedicalCaseState extends State<MedicalCase> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
-        title: Text("Medical Cases"),
+        title: Text("Medical Cases".tr(context)),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -72,9 +74,10 @@ class _MedicalCaseState extends State<MedicalCase> {
           itemCount: entries.length,
           itemBuilder: (context, index) {
             final entry = entries[index];
-            final doctorNotes = entry['doctor_notes'] ?? 'No notes';
-            final reassessmentDate = entry['reassessment_date'] ?? 'N/A';
-            final createdAt = entry['created_at'] ?? 'N/A';
+            final disease_name = entry['disease_name'] ?? 'Medical Case'.tr(context);
+            final doctorNotes = entry['doctor_notes'] ?? 'No notes'.tr(context);
+            final reassessmentDate = entry['reassessment_date'] ?? 'N/A'.tr(context);
+            final createdAt = entry['created_at'] ?? 'N/A'.tr(context);
 
             // Extract image URLs
             final List<String> imageUrls = (entry['files'] as List<dynamic>)
@@ -97,11 +100,11 @@ class _MedicalCaseState extends State<MedicalCase> {
                 ),
                 child: ExpansionTile(
                   title: Text(
-                    "Doctor Notes",
+                    disease_name,
                     style: const TextStyle(color: Colors.white, fontSize: 18),
                   ),
                   subtitle: Text(
-                    "Date: $reassessmentDate",
+                    "Date:".tr(context) + "$reassessmentDate",
                     style: const TextStyle(color: Colors.grey, fontSize: 14),
                   ),
                   iconColor: Colors.white,
@@ -113,7 +116,7 @@ class _MedicalCaseState extends State<MedicalCase> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Doctor Notes: $doctorNotes",
+                            "Doctor Notes:".tr(context)+  "$doctorNotes",
                             style: const TextStyle(color: Colors.white, fontSize: 16),
                           ),
                           SizedBox(height: 10),

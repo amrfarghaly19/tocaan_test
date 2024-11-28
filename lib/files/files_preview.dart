@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:gymjoe/Auth/forget_password.dart';
+import 'package:gymjoe/localization/app_localization.dart';
+import 'package:gymjoe/theme/loading.dart';
 import 'package:http/http.dart' as http;
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -91,11 +94,12 @@ class _ImageGalleryPageState extends State<ImageGalleryPage> {
     List<String> imageUrls = imagesData.map((image) => image['file'] as String).toList();
 
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        title: Text("Image Gallery"),
+        title: Text("Image Gallery".tr(context)),
         backgroundColor: Colors.black,
       ),
-      body: Padding(
+      body: imagesData.isEmpty ? Center(child: LoadingLogo(),): Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [

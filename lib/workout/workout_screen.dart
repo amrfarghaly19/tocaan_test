@@ -1,362 +1,25 @@
-/*
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 
-class WorkoutsScreen extends StatefulWidget {
-  final String Token;
-
-  WorkoutsScreen({Key? key, required this.Token}) : super(key: key);
-
-  @override
-  State<WorkoutsScreen> createState() => _WorkoutsScreenState();
-}
-
-class _WorkoutsScreenState extends State<WorkoutsScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-
-          Container(
-            color: const Color.fromRGBO(7, 1, 1, 0.89),
-            child: SafeArea(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      children: [
-
-                        const SizedBox(height: 11),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Workouts',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 24,
-                                fontWeight: FontWeight.w600,
-                                fontFamily: 'Inter',
-                              ),
-                            ),
-                            Row(
-                              children: [
-                                Image.network(
-                                  'https://cdn.builder.io/api/v1/image/assets/TEMP/47e1bc7c8b175035692239daf1b141401cb40be0986250939a12436a57fc070f?placeholderIfAbsent=true&apiKey=659bc5313176413ebc7dbeebe6381af9',
-                                  width: 26,
-                                  height: 31,
-                                  fit: BoxFit.contain,
-                                ),
-                                const SizedBox(width: 33),
-                                Image.network(
-                                  'https://cdn.builder.io/api/v1/image/assets/TEMP/2c5eeb1da48947c681b1ba5b42e32bacb98fe61fbf76827fdf0bb096ce1bbb2e?placeholderIfAbsent=true&apiKey=659bc5313176413ebc7dbeebe6381af9',
-                                  width: 28,
-                                  height: 28,
-                                  fit: BoxFit.contain,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 21),
-                         WorkoutProgress(),
-                        const SizedBox(height: 16),
-                        Container(
-                          height: 1,
-                          color: const Color(0xFFE42C29),
-                        ),
-                        const SizedBox(height: 14),
-                        const ExerciseList(),
-                      ],
-                    ),
-                  ),
-                  const Spacer(),
-
-                  const SizedBox(height: 9),
-                  Container(
-                    width: 134,
-                    height: 5,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                  ),
-                  const SizedBox(height: 9),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-
-class WorkoutProgress extends StatefulWidget {
-  const WorkoutProgress({Key? key}) : super(key: key);
-
-  @override
-  State<WorkoutProgress> createState() => _WorkoutProgressState();
-}
-
-class _WorkoutProgressState extends State<WorkoutProgress> {
-
-
-  late ValueNotifier<double> valueNotifier;
-
-  @override
-  void initState() {
-    super.initState();
-    valueNotifier = ValueNotifier(25.0);
-  }
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFF252525),
-        borderRadius: BorderRadius.circular(13),
-      ),
-      child: Row(
-        children: [
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              SizedBox(
-                width: 80,
-                height: 80,
-                child: SimpleCircularProgressBar(
-                  animationDuration: 2,
-                  backColor: Colors.black,
-                  maxValue: 100,
-                  progressColors: const [Colors.red],
-                  startAngle: 0,
-                  backStrokeWidth: 12,
-                  progressStrokeWidth: 12,
-                  valueNotifier: valueNotifier,
-                  mergeMode: true,
-                  onGetText: (double value) {
-                    return Text(
-                      "25%",
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    );
-                  },
-                ),
-              ),
-
-
-            ],
-          ),
-          const SizedBox(width: 30),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                 // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-
-                    const Text(
-                      'Push Day',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 28,
-                        fontWeight: FontWeight.w800,
-                        fontFamily: 'Inter',
-                      ),
-                    ),
-                    const SizedBox(width: 20),
-                    SvgPicture.asset(
-                     "assets/icons/Playcircle.svg" ,
-                      width: 48,
-                      height: 48,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 11),
-                RichText(
-                  text: const TextSpan(
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 25,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Inter',
-                    ),
-                    children: [
-                      TextSpan(text: '1/4 '),
-                      TextSpan(
-                        text: 'Exercises',
-                        style: TextStyle(fontSize: 13),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-
-
-class ExerciseList extends StatelessWidget {
-  const ExerciseList({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFF252525),
-        borderRadius: BorderRadius.circular(13),
-      ),
-      child: Column(
-        children: const [
-          ExerciseItem(
-            imageUrl: 'https://cdn.builder.io/api/v1/image/assets/TEMP/93973dfdefdddb8e94402f71ad26087ae6368d07ecb58e635c131378525ed7c4?placeholderIfAbsent=true&apiKey=659bc5313176413ebc7dbeebe6381af9',
-            icon:  "assets/icons/checkedredd.svg",
-            name: 'JUMP JACKS',
-            sets: '3 Sets x 12 Reps',
-          ),
-          SizedBox(height: 13),
-          ExerciseItem(
-            imageUrl: 'https://cdn.builder.io/api/v1/image/assets/TEMP/78ef4cd70ec51e8c4d776719533742830b073920f4e4a8e229848546a72d6424?placeholderIfAbsent=true&apiKey=659bc5313176413ebc7dbeebe6381af9',
-            icon:  "assets/icons/checkedredd.svg",
-            name: 'JUMP JACKS',
-            sets: '3 Sets x 12 Reps',
-          ),
-          SizedBox(height: 13),
-          ExerciseItem(
-
-            imageUrl: 'https://cdn.builder.io/api/v1/image/assets/TEMP/78ef4cd70ec51e8c4d776719533742830b073920f4e4a8e229848546a72d6424?placeholderIfAbsent=true&apiKey=659bc5313176413ebc7dbeebe6381af9',
-            icon:  "assets/icons/notchecked.svg",
-            name: 'JUMP JACKS',
-            sets: '3 Sets x 12 Reps',
-          ),
-          SizedBox(height: 13),
-          ExerciseItem(
-            imageUrl: 'https://cdn.builder.io/api/v1/image/assets/TEMP/78ef4cd70ec51e8c4d776719533742830b073920f4e4a8e229848546a72d6424?placeholderIfAbsent=true&apiKey=659bc5313176413ebc7dbeebe6381af9',
-            icon:  "assets/icons/notchecked.svg",
-            name: 'JUMP JACKS',
-            sets: '3 Sets x 12 Reps',
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-
-
-class ExerciseItem extends StatelessWidget {
-  final String imageUrl;
-  final String icon;
-  final String name;
-  final String sets;
-
-  const ExerciseItem({
-    Key? key,
-    required this.imageUrl,
-    required this.icon,
-    required this.name,
-    required this.sets,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        color: const Color(0xFF050505),
-        borderRadius: BorderRadius.circular(9),
-      ),
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(9),
-            child: Image.network(
-              imageUrl,
-              width: 83,
-              height: 73,
-              fit: BoxFit.cover,
-            ),
-          ),
-          const SizedBox(width: 10),
-          Container(
-            width: 1,
-            height: 73,
-            color: const Color(0xFFE42C29),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w300,
-                    fontFamily: 'Inter',
-                  ),
-                ),
-                const SizedBox(height: 14),
-                Text(
-                  sets,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w400,
-                    fontFamily: 'Inter',
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SvgPicture.asset(
-           icon ,
-            width: 27,
-            height: 27,
-          ),
-
-        ],
-      ),
-    );
-  }
-}
-
-
-*/
-
-
+import 'package:gymjoe/localization/app_localization.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
+import 'package:overlay_loading_progress/overlay_loading_progress.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 import 'package:video_player/video_player.dart';
 
 import '../configre/globale_variables.dart';
+import 'package:step_progress_indicator/step_progress_indicator.dart';
+
+import '../theme/loading.dart';
+
 
 class WorkoutsScreen extends StatefulWidget {
-  final String Token;
+  final String Token, slug;
 
-  WorkoutsScreen({Key? key, required this.Token}) : super(key: key);
+  WorkoutsScreen({Key? key, required this.Token,required this.slug}) : super(key: key);
 
   @override
   State<WorkoutsScreen> createState() => _WorkoutsScreenState();
@@ -367,7 +30,7 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
 
   List<dynamic> exercises = [];
   List<dynamic> sections = [];
-
+int day_num= 0; int plan_id = 0;
   bool isLoading = true;
   Map<String, dynamic>? allData;
   final ScrollController _scrollController = ScrollController();
@@ -378,16 +41,31 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchExercises(10);
+    _loadSelectedLanguage();
+    _fetchExercises(10,selectedDate);
 
     valueNotifier = ValueNotifier(75.0);
   }
+
+  String selectedLanguage = '';
+
+  Future<void> _loadSelectedLanguage() async {
+    final savedLanguage = await AppLocalization.getLanguage();
+    print(savedLanguage);
+    if (mounted) {
+      setState(() {
+        selectedLanguage = savedLanguage ?? 'en';
+      });
+    }
+  }
+
 
 
   void _onDateSelected(DateTime date, int index) {
     setState(() {
       selectedDate = date;
     });
+    _fetchExercises(index,selectedDate);
     double offsetToCenter = (itemWidth * index) -
         (_scrollController.position.viewportDimension / 2) +
         (itemWidth / 2);
@@ -396,6 +74,9 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
+
+    // Perform your custom action here when a new date is selected
+    print("Selected Date: ${DateFormat('dd-MM-yyyy').format(date)}");
   }
   void _centerToday(int num) {
     // The position to center today's date (index = 10 in a list of 21 dates)
@@ -415,10 +96,15 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
 
     }
 
-  }
 
-  Future<void> _fetchExercises(int num) async {
-    var url = Uri.parse("${Config.baseURL}/workout/plan?type=fitness");
+
+  }
+  Future<void> _fetchExercises(int num, DateTime date) async {
+
+    String formattedDate = DateFormat('yyyy-MM-dd').format(date);
+    var url = Uri.parse("${Config.baseURL}/workout/plan?type=${widget.slug}&date=$formattedDate");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String cookies = prefs.getString('cookies')!;
 
     try {
       final response = await http.get(
@@ -426,39 +112,61 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
         headers: {
           'Authorization': 'Bearer ${widget.Token}',
           'Content-Type': 'application/json',
+          'Cookie': cookies,
         },
       );
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
+        List<dynamic> sectionsData = responseData['data']['sections'];
+
+        List<dynamic> flattenedExercises = [];
+
+        for (var section in sectionsData) {
+          for (var exercise in section['exercises']) {
+            // Enrich each exercise with its parent section's sets and reps
+            exercise['sets'] = section['sets'];
+            exercise['reps'] = section['reps'];
+            exercise['tempo'] = section['tempo'];
+
+            flattenedExercises.add(exercise);
+          }
+        }
+
         setState(() {
           allData = responseData['data'];
-          sections=responseData['data']['sections'];
-          exercises = responseData['data']['sections']
-              .expand((section) => section['exercises'] as Iterable)
-              .toList();
+          sections = sectionsData;
+          exercises = flattenedExercises;
+          day_num= responseData['data']['day_num'];
+          plan_id = responseData['data']['plan_id'];
+
+          print("day_num $day_num :plan_id  $plan_id ");
           isLoading = false;
+          print("num is $num");
+          if (num > 17) {
+            print("num is $num will not move");
+          } else {
+            WidgetsBinding.instance.addPostFrameCallback((_) => _centerToday(num));
+          }
         });
-
-        if(num > 17){
-          print("num is $num will not move");
-        }else {
-
-          WidgetsBinding.instance.addPostFrameCallback((_) => _centerToday(num));// Set loading to false once data is fetched
-        }
+        OverlayLoadingProgress.stop();
       } else {
         print('Failed to load exercises');
         setState(() {
           isLoading = false;
         });
+        OverlayLoadingProgress.stop();
       }
     } catch (e) {
       print('Error: $e');
       setState(() {
         isLoading = false;
       });
+      OverlayLoadingProgress.stop();
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -466,9 +174,10 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
     DateTime today = DateTime.now();
     List<DateTime> dates = _generateDates(today);
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: Text('Workout Plans'),
+        title: Text('Workout Plans'.tr(context),style: TextStyle(color: Colors.white),),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
@@ -493,7 +202,7 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
       body: Stack(
         children: [
           Container(
-            color: const Color.fromRGBO(7, 1, 1, 0.89),
+            color:  Colors.black,
             child: SafeArea(
               child: SingleChildScrollView(
                 child: Column(
@@ -508,33 +217,20 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
                         children: [
                           const SizedBox(height: 11),
 
-                      /*    Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text(
-                                'Workouts',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w600,
-                                  fontFamily: 'Inter',
-                                ),
-                              ),
-                            ],
-                          ),*/
                           const SizedBox(height: 31),
-                          DateSelector(today, dates),
+                          DateSelector(context,today,dates,selectedLanguage),
                           const SizedBox(height: 21),
                           Workout(),
                           const SizedBox(height: 16),
                           Container(
                             height: 1,
-                            color: const Color(0xFFE42C29),
+                            color: const Color(0XFFFF0336),
                           ),
                           const SizedBox(height: 14),
                           isLoading
-                              ? const Center(child: CircularProgressIndicator())
-                              : ExerciseList(exercises: exercises, sections:sections),
+                              ? const Center(child: LoadingLogo())
+
+                              : exercises.isEmpty?SizedBox(): ExerciseList(exercises: exercises, sections:sections,day_num:day_num,plan_id:plan_id, Token: widget.Token),
                         ],
                       ),
                     ),
@@ -547,10 +243,29 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
           ),
         ],
       ),
+      floatingActionButton: exercises.isEmpty?SizedBox(): Container(
+        padding: EdgeInsets.all(2),
+        height: 50,
+        width: 170,
+        child: FloatingActionButton(onPressed:()=> showExerciseModal(context, exercises, 0,widget.Token,plan_id,
+            day_num),
+          backgroundColor: Color(0xFFff0336),
+        child: Padding(
+          padding: const EdgeInsets.all(6.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+
+            children: [
+            Icon(Icons.play_arrow_outlined),
+
+            Text("Start Workout".tr(context))
+          ],),
+        ),),
+      ),
     );
   }
-
-  Widget DateSelector(DateTime today, List<DateTime> dates) {
+  Widget DateSelector(BuildContext context, DateTime today, List<DateTime> dates, String locale) {
+    print(locale);
     return SizedBox(
       height: 70,
       child: ListView.builder(
@@ -565,23 +280,42 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
               date.day == selectedDate.day;
           bool isDisabled = date.isBefore(today.subtract(Duration(days: 10)));
 
+          // Format day and month based on the locale
+          String day = DateFormat('d', locale).format(date);
+          String month = DateFormat('MMM', locale).format(date);
+
           return GestureDetector(
             onTap: !isDisabled
                 ? () {
+              OverlayLoadingProgress.start(
+                context,
+                widget: Center(
+                  child: Container(
+                    color: Colors.transparent,
+                    width: MediaQuery.of(context).size.width,
+                    child: const AspectRatio(
+                      aspectRatio: 1 / 3,
+                      child: LoadingLogo(),
+                    ),
+                  ),
+                ),
+              );
               _onDateSelected(date, index);
             }
                 : null,
-            child: _DateItem(
-              day: DateFormat('d').format(date),
-              month: DateFormat('MMM').format(date),
-              isSelected: isSelected,
-              isDisabled: isDisabled,
-            ),
+            child:   _DateItem(
+            day: day,
+            month: month,
+            isSelected: isSelected,
+            isDisabled: isDisabled,
+          ),
           );
         },
       ),
     );
   }
+
+
 
   List<DateTime> _generateDates(DateTime today) {
     List<DateTime> dates = [];
@@ -592,6 +326,7 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
   }
 
   Widget Workout() {
+    print("${exercises.length}"+" "+ "Exercises".tr(context));
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 13, vertical: 8),
       decoration: BoxDecoration(
@@ -623,7 +358,7 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
               ),
             ],
           ),
-          Container(
+        /*  Container(
             width: 44,
             height: 44,
             decoration: BoxDecoration(
@@ -635,7 +370,7 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
                 animationDuration: 2,
                 backColor: Colors.transparent,
                 maxValue: 100,
-                progressColors: const [Colors.red, Colors.red],
+                progressColors: const [Color(0XFFFF0336), Color(0XFFFF0336)],
                 backStrokeWidth: 5,
                 progressStrokeWidth: 5,
                 valueNotifier: valueNotifier,
@@ -652,7 +387,7 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
                 },
               ),
             ),
-          ),
+          ),*/
         ],
       ),
     );
@@ -665,14 +400,19 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
   }
 }
 
+
+
 class ExerciseList extends StatelessWidget {
   final List<dynamic> exercises;
+  final String Token;
   final List<dynamic> sections;
+  final int plan_id,day_num;
 
-  const ExerciseList({Key? key, required this.exercises, required this.sections}) : super(key: key);
+  const ExerciseList({Key? key, required this.exercises,required this.plan_id,required this.day_num,required this.Token, required this.sections}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -687,7 +427,7 @@ class ExerciseList extends StatelessWidget {
             children: [
               GestureDetector(
                 onTap: () {
-                  showExerciseModal(context, exercises, index);
+                  showExerciseModal(context, exercises, index,Token,plan_id,day_num);
                 },
                 child: ExerciseItem(
                   imageUrl: exercise['image'] ?? '',
@@ -695,7 +435,8 @@ class ExerciseList extends StatelessWidget {
                       ? "assets/icons/checkedredd.svg"
                       : "assets/icons/notchecked.svg",
                   name: exercise['exercise_name'] ?? 'Unknown Exercise',
-                  sets: '${sections[index]['sets']} Sets x ${sections[index]['reps']} Reps',
+                  // Use the enriched 'sets' and 'reps' directly from the exercise
+                  sets: '${exercise['sets']}'+ ' '+ 'Sets'.tr(context)+ ' x ' + '${exercise['reps']}'+ ' '+'Reps'.tr(context)+ ','+' ' +'${exercise['tempo']}'+ ' '+ 'tempo'.tr(context),
                 ),
               ),
               const SizedBox(height: 13),
@@ -707,7 +448,8 @@ class ExerciseList extends StatelessWidget {
   }
 }
 
-void showExerciseModal(BuildContext context, List exercises, int index) {
+
+void showExerciseModal(BuildContext context, List exercises, int index,String Token,int plan_id,int day_num) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -716,8 +458,11 @@ void showExerciseModal(BuildContext context, List exercises, int index) {
     backgroundColor: Colors.black,
     builder: (BuildContext context) {
       return ExerciseModalContent(
+        Token: Token,
         exercises: exercises,
         initialIndex: index,
+          plan_id:plan_id,
+          day_num:day_num
       );
     },
   );
@@ -739,6 +484,7 @@ class ExerciseItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
       padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
@@ -760,7 +506,7 @@ class ExerciseItem extends StatelessWidget {
           Container(
             width: 1,
             height: 73,
-            color: const Color(0xFFE42C29),
+            color: const Color(0XFFFF0336),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -778,7 +524,7 @@ class ExerciseItem extends StatelessWidget {
                 ),
                 const SizedBox(height: 14),
                 Text(
-                  sets,
+                  sets??"",
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 13,
@@ -789,11 +535,11 @@ class ExerciseItem extends StatelessWidget {
               ],
             ),
           ),
-          SvgPicture.asset(
+        /*  SvgPicture.asset(
             icon,
             width: 27,
             height: 27,
-          ),
+          ),*/
         ],
       ),
     );
@@ -803,11 +549,17 @@ class ExerciseItem extends StatelessWidget {
 class ExerciseModalContent extends StatefulWidget {
   final List<dynamic> exercises;
   final int initialIndex;
+  final String Token;
+  final int   plan_id,
+  day_num;
 
   const ExerciseModalContent({
     Key? key,
     required this.exercises,
     required this.initialIndex,
+    required this.plan_id,
+    required this.day_num,
+    required this.Token,
   }) : super(key: key);
 
   @override
@@ -825,6 +577,7 @@ class _ExerciseModalContentState extends State<ExerciseModalContent> {
   void initState() {
     super.initState();
     currentIndex = widget.initialIndex;
+    print(widget.exercises);
     _loadVideo(widget.exercises[currentIndex]['video']);
   }
 
@@ -871,12 +624,12 @@ class _ExerciseModalContentState extends State<ExerciseModalContent> {
   String _formatDuration(Duration duration) {
     return DateFormat('mm:ss').format(DateTime.fromMillisecondsSinceEpoch(duration.inMilliseconds));
   }
-
+ String SelectedFeedbackalue ="";
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.9,
+      height: MediaQuery.of(context).size.height * 0.97,
       padding: const EdgeInsets.all(16),
       child: Stack(
         children: [
@@ -893,6 +646,33 @@ class _ExerciseModalContentState extends State<ExerciseModalContent> {
                   ),
                 ],
               ),
+              StepProgressIndicator(
+                totalSteps: widget.exercises.length ,
+                currentStep: currentIndex +1,
+                size: 10,
+                selectedColor: Color(0XFFFF0336),
+                unselectedColor: Colors.white,
+                roundedEdges: Radius.circular(10),
+                /*gradientColor: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Colors.orange, Colors.white],
+                ),*/
+              ),
+              SizedBox(height: 10,),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(widget.exercises[currentIndex]['exercise_name'],style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
+                  Text("Tool: ${widget.exercises[currentIndex]['tools'][0]["tool_name"]}",style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
+
+                  Text("${widget.exercises[currentIndex]['sets']} Sets x ${widget.exercises[currentIndex]['reps']} Reps , ${widget.exercises[currentIndex]['tempo']} Tempo"),
+                ],
+              ),
+              SizedBox(height: 15,),
+
+
+              //  Text(widget.exercises[currentIndex]['tools']['tool_name']),
               Expanded(
                 child: _controller.value.isInitialized
                     ? AspectRatio(
@@ -951,8 +731,8 @@ class _ExerciseModalContentState extends State<ExerciseModalContent> {
                               ),
                               Expanded(
                                 child: Slider(
-                                  thumbColor: Colors.red,
-                                  activeColor: Colors.red,
+                                  thumbColor: Color(0XFFFF0336),
+                                  activeColor: Color(0XFFFF0336),
                                   inactiveColor: Colors.white,
                                   value: _controller.value.position.inSeconds.toDouble(),
                                   min: 0,
@@ -980,27 +760,45 @@ class _ExerciseModalContentState extends State<ExerciseModalContent> {
                 )
                     : const Center(child: CircularProgressIndicator()),
               ),
+              SizedBox(height: 5,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(
                     style: ButtonStyle(
                         backgroundColor:
-                        currentIndex > 0 ? MaterialStateProperty.all(Colors.red) : null),
+                        currentIndex > 0 ? MaterialStateProperty.all(Color(0XFFFF0336)) : null),
                     onPressed: currentIndex > 0 ? _showPreviousVideo : null,
-                    child: Text("Previous Video"),
+                    child: Text("Previous Video".tr(context),
+
+                      style: TextStyle(color: currentIndex > 0 ? Colors.white: Colors.white.withOpacity(0.7),
+                          fontSize: 11
+
+                      ),),
                   ),
                   ElevatedButton(
-                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.red)),
+                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Color(0XFFFF0336))),
                     onPressed: () {
                       Navigator.pop(context);
+                      showSatisfactionSurvey(context);
+
                     },
-                    child: Text("Finish"),
+                    child: Text("Finish".tr(context),
+
+    style: TextStyle(color: Colors.white,
+    fontSize: 11
+
+    ),),
                   ),
                   ElevatedButton(
-                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.red)),
+                    style: ButtonStyle(backgroundColor:currentIndex < widget.exercises.length - 1 ? MaterialStateProperty.all(Color(0XFFFF0336)) : null),
                     onPressed: currentIndex < widget.exercises.length - 1 ? _showNextVideo : null,
-                    child: Text("Next Video"),
+                    child: Text("Next Video".tr(context),
+
+    style: TextStyle(color: Colors.white,
+    fontSize: 11
+
+    ),),
                   ),
                 ],
               ),
@@ -1034,7 +832,7 @@ class _ExerciseModalContentState extends State<ExerciseModalContent> {
                 height: 40,
                 width: 50,
                 decoration: BoxDecoration(
-                  color: Colors.red,
+                  color: Color(0XFFFF0336),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Padding(
@@ -1050,6 +848,90 @@ class _ExerciseModalContentState extends State<ExerciseModalContent> {
         ],
       ),
     );
+  }
+
+  void showSatisfactionSurvey(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true, // Makes the bottom sheet full-height if needed
+      backgroundColor: Colors.black, // Black background
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
+      builder: (BuildContext context) {
+        return Padding(
+          padding: MediaQuery.of(context).viewInsets, // Handle keyboard overlap
+          child: SatisfactionSurvey(
+            onSubmit: (selectedValue) {
+              // Handle the submitted value here
+              print("User selected: $selectedValue");
+              // You can add further processing, such as sending to a server
+
+
+              SelectedFeedbackalue = "$selectedValue";
+
+
+
+              submitSchedule();
+
+            },
+          ),
+        );
+      },
+    );
+  }
+  Future<void> submitSchedule() async {
+
+    // Format the current date as "YYYY-MM-DD HH:MM:SS"
+    String formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+
+    final url = Uri.parse('${Config.baseURL}/workout/set-finish');
+    print(formattedDate);
+
+    final payload = {
+      "feedback": SelectedFeedbackalue, // ["tooeasy", "a_little_easy", "just_right", "a_little_hard", "too_hard"]
+      "plan_id": widget. plan_id,
+     // current plan id
+      "day_num":  widget.day_num, // integer value of the workout day_num
+      "date": formattedDate // Workout Date of the day in format "Y-m-d H:i:s"
+    };
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String cookies = prefs.getString('cookies')!;
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Bearer ${widget.Token}',
+          'Content-Type': 'application/json',
+          "Accept":"application/json",
+    'Cookie': cookies,
+        },
+        body: jsonEncode(payload),
+      );
+
+      final responseBody = response.body;
+
+      try {
+        final jsonResponse = jsonDecode(responseBody);
+        print('Response (JSON): $jsonResponse');
+      } catch (e) {
+        print('Response (Non-JSON): $responseBody');
+      }
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Thank you for your feedback!"),
+            backgroundColor:Color(0xFFff0336),
+          ),
+        );
+      } else {
+        print('Failed to update schedule. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error updating schedule: $e');
+    }
   }
 }
 
@@ -1074,7 +956,7 @@ class _DateItem extends StatelessWidget {
     Color textColor = const Color(0xFFD9D9D9);
 
     if (isSelected) {
-      backgroundColor = const Color(0xFFE42C29);
+      backgroundColor = const Color(0XFFFF0336);
       textColor = Colors.white;
     } else if (isDisabled) {
       backgroundColor = const Color(0xFF050505);
@@ -1144,7 +1026,7 @@ class CustomPhotoDialog extends StatelessWidget {
             Expanded(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child:SvgPicture.string(
+                child:SvgPicture.network(
                   svgUrl1,
                   height: 300, // Adjust the size as needed
                   width: 300,
@@ -1159,7 +1041,7 @@ class CustomPhotoDialog extends StatelessWidget {
             Expanded(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: SvgPicture.string(
+                child: SvgPicture.network(
                   svgUrl2,
                   fit: BoxFit.contain,
 
@@ -1184,17 +1066,141 @@ class CustomPhotoDialog extends StatelessWidget {
   }
 }
 
-// Usage example
-void showPhotoDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (context) {
-      return CustomPhotoDialog(
-        svgUrl1: 'https://demo.team-hm.com/api/client/workout/lib/exercises/7/male/front',
-        svgUrl2: 'https://demo.team-hm.com/api/client/workout/lib/exercises/7/male/front', // Update with your SVG URLs as needed
-      );
-    },
-  );
+
+
+// SurveyOption Model
+class SurveyOption {
+  final String displayLabel;
+  final String value;
+  final String emoji;
+
+  SurveyOption({
+    required this.displayLabel,
+    required this.value,
+    required this.emoji,
+  });
 }
 
+// SatisfactionSurvey Widget
+class SatisfactionSurvey extends StatefulWidget {
+  final Function(String) onSubmit;
+
+  const SatisfactionSurvey({Key? key, required this.onSubmit}) : super(key: key);
+
+  @override
+  _SatisfactionSurveyState createState() => _SatisfactionSurveyState();
+}
+
+class _SatisfactionSurveyState extends State<SatisfactionSurvey> {
+  // Define the survey options
+  final List<SurveyOption> options = [
+    SurveyOption(displayLabel: "Too Easy", value: "tooeasy", emoji: "🟢"),
+    SurveyOption(displayLabel: "A Little Easy", value: "a_little_easy", emoji: "😊"),
+    SurveyOption(displayLabel: "Just Right", value: "just_right", emoji: "😐"),
+    SurveyOption(displayLabel: "A Little Hard", value: "a_little_hard", emoji: "😕"),
+    SurveyOption(displayLabel: "Too Hard", value: "too_hard", emoji: "🔴"),
+  ];
+
+  // Track the selected index
+  int? selectedIndex;
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.black, // Black background for the bottom sheet
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        mainAxisSize: MainAxisSize.min, // Wrap content vertically
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Survey Title
+          Center(
+            child: Text(
+              "How was your experience?",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          SizedBox(height: 20),
+
+          // Display the options
+          Column(
+            children: List.generate(options.length, (index) {
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    selectedIndex = index;
+                  });
+                },
+                child: Container(
+                  margin: EdgeInsets.symmetric(vertical: 8),
+                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: selectedIndex == index
+                        ? Color(0xFFff0336)
+                        : Colors.grey[800],
+                    borderRadius: BorderRadius.circular(8),
+                    border: selectedIndex == index
+                        ? Border.all(color: Color(0xFFff0336), width: 2)
+                        : null,
+                  ),
+                  child: Row(
+                    children: [
+                      Text(
+                        options[index].emoji,
+                        style: TextStyle(fontSize: 24),
+                      ),
+                      SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          options[index].displayLabel,
+                          style: TextStyle(
+                            color: selectedIndex == index
+                                ? Colors.white
+                                : Colors.grey[300],
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
+          ),
+
+          SizedBox(height: 20),
+
+          // Submit Button
+          Center(
+            child: ElevatedButton(
+              onPressed: selectedIndex != null
+                  ? () {
+                // Pass the selected value back to the parent widget
+                String selectedValue = options[selectedIndex!].value;
+                widget.onSubmit(selectedValue);
+                Navigator.pop(context); // Close the bottom sheet
+              }
+                  : null, // Disable button if no selection
+              child: Text("Submit"),
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white, backgroundColor: Color(0xFFff0336), // Text color
+                padding:
+                EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                textStyle: TextStyle(fontSize: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 

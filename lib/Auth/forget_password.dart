@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gymjoe/Auth/login.dart';
+import 'package:gymjoe/localization/app_localization.dart';
 import 'package:gymjoe/theme/loading.dart';
 import 'package:http/http.dart' as http;
 import 'package:overlay_loading_progress/overlay_loading_progress.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'dart:convert';
 import '../configre/globale_variables.dart';
 import '../moves/fade.dart';
@@ -34,61 +36,57 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         child: Container(
 
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 22.0, vertical: 40.0),
+            padding: const EdgeInsets.symmetric(horizontal: 22.0, vertical: 10.0),
             child: Column(
               children: [
 
-                const SizedBox(height: 143),
+                const SizedBox(height: 90),
                 Image.asset(
                   'assets/logogym.png',
                   fit: BoxFit.contain,
                   width: 277,
                 ),
-                const SizedBox(height: 50),
-                const Text(
-                  'Reset Your Password',
+                const SizedBox(height: 30),
+                 Text(
+                  'Reset Your Password'.tr(context),
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 20,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 51),
+                const SizedBox(height: 40),
                  EmailInput(),
                 const SizedBox(height: 21),
                  ResetButton(),
                 const SizedBox(height: 21),
                  CustomDivider(),
                 const SizedBox(height: 13),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: const Text(
-                    'Send sales via Telegram',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
+                Text(
+                  'Contact sales via Whatsapp'.tr(context),
+                  style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
                 const SizedBox(height: 14),
                  TelegramButton(),
-                const SizedBox(height: 19),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: GestureDetector(
+                const SizedBox(height: 25),
+
+                  GestureDetector(
                     onTap: () {
                       Navigator.of(context).push(FadePageRoute(
                         page: LoginPage(),
                       ));
                     },
-                    child: const Text(
-                      'Back to Login',
+                    child:  Text(
+                      'Back to Login'.tr(context),
                       style: TextStyle(
                         color: Color(0xFFDADADA),
                         fontSize: 19,
-                        decoration: TextDecoration.underline,
+                        decoration: TextDecoration.none,
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 171),
+
+                const SizedBox(height: 40),
               ],
             ),
           ),
@@ -147,7 +145,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           _showSnackBar(loginMap['message'] ?? 'Login successful!', Colors.blue);
         } else {
           // Handle case when access_token is missing
-          _showSnackBar('Error: Access token not found', Colors.red);
+          _showSnackBar('Error: Access token not found', Color(0XFFFF0336));
         }
 
         OverlayLoadingProgress.stop();
@@ -155,12 +153,12 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         var responseData = await response.stream.bytesToString();
         var loginMap = json.decode(responseData);
         OverlayLoadingProgress.stop();
-        _showSnackBar(loginMap['error'] ?? 'An error occurred.', Colors.red);
+        _showSnackBar(loginMap['error'] ?? 'An error occurred.', Color(0XFFFF0336));
       }
     } catch (e) {
       print('Error: $e');
       OverlayLoadingProgress.stop();
-      _showSnackBar('An error occurred. Please try again.', Colors.red);
+      _showSnackBar('An error occurred. Please try again.', Color(0XFFFF0336));
     }
   }
 
@@ -196,7 +194,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             width: 3,
             height: 35,
             decoration: BoxDecoration(
-              border: Border.all(color: const Color(0xFFE42C29), width: 3),
+              border: Border.all(color: const Color(0XFFFF0336), width: 3),
             ),
           ),
           const SizedBox(width: 17),
@@ -204,9 +202,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             child: TextFormField(
               controller: emailController,
 
-              style: const TextStyle(color: Colors.white, fontSize: 16),
-              decoration: const InputDecoration(
-                hintText: "Enter Your Email",
+              style:  TextStyle(color: Colors.white, fontSize: 16),
+              decoration:  InputDecoration(
+                hintText: "Enter Your Email".tr(context),
+                hintStyle: TextStyle(color: Colors.white),
                 border: InputBorder.none,
                 isDense: true,
               ),
@@ -226,14 +225,14 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           OnTapRessetPassword();
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFFE42C29),
+          backgroundColor: const Color(0XFFFF0336),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(9),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 70, vertical: 15),
         ),
-        child: const Text(
-          'Reset Password',
+        child:  Text(
+          'Reset Password'.tr(context),
           style: TextStyle(
             color: Colors.white,
             fontSize: 16,
@@ -260,7 +259,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           width: screenWidth/4,
           child: Center(
             child: Text(
-              'Or',
+              'Or'.tr(context),
               style: TextStyle(color: Colors.white, fontSize: 16),
             ),
           ),
@@ -279,18 +278,28 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: () {
+        onPressed: ()async {
           // Handle Telegram action
+
+          final Uri whatsappUri = Uri.parse('https://wa.me/201062599157');
+          if (await canLaunchUrl(whatsappUri)) {
+          await launchUrl(whatsappUri, mode: LaunchMode.externalApplication);
+          } else {
+          // Handle the error, e.g., show a SnackBar or Dialog
+          ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not launch WhatsApp.')),
+          );
+          }
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF24A1DE),
+          backgroundColor: const Color(0xFF25D366),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(9),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 70, vertical: 15),
         ),
-        child: const Text(
-          'Telegram',
+        child:  Text(
+          'Whatsapp'.tr(context),
           style: TextStyle(
             color: Colors.white,
             fontSize: 16,

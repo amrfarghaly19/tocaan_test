@@ -82,7 +82,7 @@ centerTitle: true,
                   color: const Color(0xFF1F1F1F),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.red.withOpacity(0.1),
+                      color: Color(0XFFFF0336).withOpacity(0.1),
                       blurRadius: 5,
                       spreadRadius: 1,
                     ),
@@ -151,7 +151,7 @@ centerTitle: true,
                   color: const Color(0xFF1F1F1F),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.red.withOpacity(0.1),
+                      color: Color(0XFFFF0336).withOpacity(0.1),
                       blurRadius: 5,
                       spreadRadius: 1,
                     ),
@@ -279,15 +279,15 @@ centerTitle: true,
                                 }).toList(),
                                 isCurved: true,
                                 gradient: LinearGradient(
-                                  colors: [Colors.red, Colors.redAccent],
+                                  colors: [Color(0XFFFF0336), Color(0XFFFF0336)],
                                 ),
                                 barWidth: 3,
                                 belowBarData: BarAreaData(
                                   show: true,
                                   gradient: LinearGradient(
                                     colors: [
-                                      Colors.red.withOpacity(0.3),
-                                      Colors.redAccent.withOpacity(0.1),
+                                      Color(0XFFFF0336).withOpacity(0.3),
+                                      Color(0XFFFF0336).withOpacity(0.1),
                                     ],
                                   ),
                                 ),
@@ -296,7 +296,7 @@ centerTitle: true,
                                   getDotPainter: (spot, percent, barData, index) {
                                     return FlDotCirclePainter(
                                       radius: 4,
-                                      color: Colors.red,
+                                      color: Color(0XFFFF0336),
                                       strokeWidth: 2,
                                       strokeColor: Colors.white,
                                     );
@@ -307,7 +307,7 @@ centerTitle: true,
 
                             lineTouchData: LineTouchData(
                               touchTooltipData: LineTouchTooltipData(
-                                tooltipBgColor: Colors.white.withOpacity(0.8),
+                               // tooltipBgColor: Colors.white.withOpacity(0.8),
                                 getTooltipItems: (touchedSpots) {
                                   return touchedSpots.map((spot) {
                                     return LineTooltipItem(
@@ -533,15 +533,15 @@ centerTitle: true,
                               }).toList(),
                               isCurved: true,
                               gradient: LinearGradient(
-                                colors: [Colors.red, Colors.redAccent],
+                                colors: [Color(0XFFFF0336), Color(0XFFFF0336)],
                               ),
                               barWidth: 3,
                               belowBarData: BarAreaData(
                                 show: true,
                                 gradient: LinearGradient(
                                   colors: [
-                                    Colors.red.withOpacity(0.3),
-                                    Colors.redAccent.withOpacity(0.1),
+                                    Color(0XFFFF0336).withOpacity(0.3),
+                                    Color(0XFFFF0336).withOpacity(0.1),
                                   ],
                                 ),
                               ),
@@ -550,7 +550,7 @@ centerTitle: true,
                                 getDotPainter: (spot, percent, barData, index) {
                                   return FlDotCirclePainter(
                                     radius: 4,
-                                    color: Colors.red,
+                                    color: Color(0XFFFF0336),
                                     strokeWidth: 2,
                                     strokeColor: Colors.white,
                                   );
@@ -560,7 +560,7 @@ centerTitle: true,
                           ],
                           lineTouchData: LineTouchData(
                             touchTooltipData: LineTouchTooltipData(
-                              tooltipBgColor: Colors.white.withOpacity(0.8),
+                             // tooltipBgColor: Colors.white.withOpacity(0.8),
                               getTooltipItems: (touchedSpots) {
                                 return touchedSpots.map((spot) {
                                   return LineTooltipItem(

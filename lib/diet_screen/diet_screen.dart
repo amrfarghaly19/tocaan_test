@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gymjoe/localization/app_localization.dart';
 import 'package:overlay_loading_progress/overlay_loading_progress.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_circular_progress_bar/simple_circular_progress_bar.dart';
 import 'package:intl/intl.dart';
@@ -11,6 +13,8 @@ import 'dart:convert';
 
 import '../configre/globale_variables.dart';
 import '../theme/loading.dart';
+import '../theme/widgets/bottombar_provider.dart';
+import 'e_book.dart';
 
 class DietPlanScreen extends StatefulWidget {
   final String Token;
@@ -24,6 +28,7 @@ class DietPlanScreen extends StatefulWidget {
 class _DietPlanScreenState extends State<DietPlanScreen> {
   DateTime now = DateTime.now();
   var loginMap;
+  String Guidlines="";
   bool isLoading = true; // Add loading flag
   final ScrollController _scrollController = ScrollController();
   DateTime selectedDate = DateTime.now();
@@ -60,7 +65,7 @@ class _DietPlanScreenState extends State<DietPlanScreen> {
     setState(() {
       selectedDate = date;
     });
-
+    getData(selectedDate,index);
     // Calculate the offset to center the selected date
     double offsetToCenter = (itemWidth * index) -
         (_scrollController.position.viewportDimension / 2) +
@@ -80,18 +85,69 @@ class _DietPlanScreenState extends State<DietPlanScreen> {
   @override
   void initState() {
     super.initState();
+    _loadSelectedLanguage();
     WidgetsBinding.instance.addPostFrameCallback((_) {
      // String formattedDate = DateFormat('yyyy-MM-dd').format(now);
-      getData(DateTime.now(),10); // Call getData after the widget is fully initialized
+      getData(DateTime.now(),10);
+      getGuidlines();// Call getData after the widget is fully initialized
     });
   }
+  String selectedLanguage = '';
+
+  Future<void> _loadSelectedLanguage() async {
+    final savedLanguage = await AppLocalization.getLanguage();
+    if (mounted) {
+      setState(() {
+        selectedLanguage = savedLanguage ?? 'en';
+      });
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
+
+
     DateTime today = DateTime.now();
     List<DateTime> dates = _generateDates(today);
     return Scaffold(
       backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        leading: IconButton(onPressed: (){
+
+          Provider.of<NavigationProvider>(context, listen: false).setIndex(0); // For example, to navigate to the third tab
+
+          // Navigator.pop(context);
+        }, icon: Icon(Icons.arrow_back, color: Colors.white,)),
+
+        title: Text(
+          'Diet Plan'.tr(context),
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.w600,
+            fontFamily: 'Inter',
+          ),
+        ) ,
+        actions: [
+          Image.network(
+            'https://cdn.builder.io/api/v1/image/assets/TEMP/47e1bc7c8b175035692239daf1b141401cb40be0986250939a12436a57fc070f?placeholderIfAbsent=true&apiKey=659bc5313176413ebc7dbeebe6381af9',
+            width: 26,
+            height: 31,
+            fit: BoxFit.contain,
+          ),
+          const SizedBox(width: 33),
+          Image.network(
+            'https://cdn.builder.io/api/v1/image/assets/TEMP/2c5eeb1da48947c681b1ba5b42e32bacb98fe61fbf76827fdf0bb096ce1bbb2e?placeholderIfAbsent=true&apiKey=659bc5313176413ebc7dbeebe6381af9',
+            width: 28,
+            height: 28,
+            fit: BoxFit.contain,
+          ),
+
+        ],
+        elevation: 0,
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child:  isLoading
@@ -102,67 +158,108 @@ class _DietPlanScreenState extends State<DietPlanScreen> {
                 color: const Color(0xE3070101),
                 child: Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Diet Plan',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: 'Inter',
-                            ),
-                          ),
-                          Row(
-                            children: [
-                              Image.network(
-                                'https://cdn.builder.io/api/v1/image/assets/TEMP/47e1bc7c8b175035692239daf1b141401cb40be0986250939a12436a57fc070f?placeholderIfAbsent=true&apiKey=659bc5313176413ebc7dbeebe6381af9',
-                                width: 26,
-                                height: 31,
-                                fit: BoxFit.contain,
-                              ),
-                              const SizedBox(width: 33),
-                              Image.network(
-                                'https://cdn.builder.io/api/v1/image/assets/TEMP/2c5eeb1da48947c681b1ba5b42e32bacb98fe61fbf76827fdf0bb096ce1bbb2e?placeholderIfAbsent=true&apiKey=659bc5313176413ebc7dbeebe6381af9',
-                                width: 28,
-                                height: 28,
-                                fit: BoxFit.contain,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
+
                     const SizedBox(height: 31),
 
-                     DateSelector(today,dates),
+                     DateSelector(context,today,dates,selectedLanguage),
                     const SizedBox(height: 34),
 
                     // Show loading indicator while data is loading
                     isLoading
-                        ? CircularProgressIndicator() // Show a loading spinner
+                        ? LoadingLogo() // Show a loading spinner
                         : CalorieSummary(data: loginMap),
                     // Show the widget when data is loaded
 
                     const SizedBox(height: 24),
                     isLoading
-                        ? CircularProgressIndicator() // Show a loading spinner
+                        ? LoadingLogo() // Show a loading spinner
                         : MealPreview(meals: loginMap['data']['meals']),
                   ],
                 ),
               ),
               const SizedBox(height: 32),
               isLoading
-                  ? CircularProgressIndicator()
-                  : NextMeal(meals: loginMap['data']['meals'], timeZoneOffset: '+00:00'),
+                  ? LoadingLogo()
+                  : NextMeal(meals: loginMap['data']['meals'], timeZoneOffset: '+00:00', selectedLanguage:selectedLanguage),
               const SizedBox(height: 20),
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(12.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+
+                    InkWell(
+                      onTap: (){
+                        showCustomDialog(context);
+
+                      },
+                      child: Container(
+                        width:MediaQuery.of(context).size.width/2.3 ,
+                        height: 40,
+                        // height: height,
+                        decoration: BoxDecoration(
+                          color: Color(0XFFFF0336), // Red background color
+                          borderRadius: BorderRadius.circular(8), // Rounded edges with radius 20
+                          /*  boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 5,
+                              offset: Offset(0, 2),
+                            ),
+                          ],*/
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Guidelines".tr(context),
+                            style: TextStyle(color: Colors.white, fontSize: 14),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    InkWell(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => FoodPage(Token: widget.Token),
+                          ),
+                        );
+
+
+                      },
+                      child: Container(
+                        width:MediaQuery.of(context).size.width/2.3 ,
+                        height: 40,
+                        // height: height,
+                        decoration: BoxDecoration(
+
+                            color: Colors.transparent, // Transparent background
+                            border: Border.all(
+                              color: Color(0XFFFF0336), // Red border color
+                              width: 1, // Border width
+                            ),
+                            borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "E-Cooking Book".tr(context),
+                            style: TextStyle(color: Colors.white, fontSize: 14),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.all(12.0),
                 child: Center(child: Text(loginMap['data']['notes'],
-                textAlign: TextAlign.center,)),
+                style: TextStyle(color: Colors.white),
+                textAlign: TextAlign.left,)),
               ),
               const SizedBox(height: 200),
             ],
@@ -171,6 +268,119 @@ class _DietPlanScreenState extends State<DietPlanScreen> {
       ),
     );
   }
+
+
+
+  void showCustomDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible:
+      false, // User must tap button for closing the dialog
+      builder: (BuildContext context) {
+        // Calculate 75% of screen height
+        double dialogHeight = MediaQuery.of(context).size.height * 0.80;
+        double dialogWidth = MediaQuery.of(context).size.width ;
+
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20), // Rounded edges
+          ),
+          elevation: 0,
+          backgroundColor: Colors
+              .transparent, // Allows for custom shape and transparency
+          child: dialogContent(context, dialogHeight, dialogWidth),
+        );
+      },
+    );
+  }
+
+  // Widget representing the content of the dialog
+  Widget dialogContent(BuildContext context, double height, double width) {
+    return Container(
+      height: height,
+      width: width,
+      padding: EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.black, // Dialog background color
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 10,
+            offset: Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Text(
+            'Guidlines'.tr(context),
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Color(0XFFFF0336)
+            ),
+          ),
+          SizedBox(height: 20),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Text(
+                // Sample long text to demonstrate scrollability
+               Guidlines??"",
+                style: TextStyle(fontSize: 16,color: Colors.white),
+              ),
+            ),
+          ),
+          SizedBox(height: 20),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child:
+            InkWell(
+              onTap: (){
+                Navigator.of(context).pop();
+
+              },
+              child: Container(
+                width:MediaQuery.of(context).size.width/2.1 ,
+                height: 40,
+                // height: height,
+                decoration: BoxDecoration(
+                  color: Color(0XFFFF0336), // Red background color
+                  borderRadius: BorderRadius.circular(8), // Rounded edges with radius 20
+                  /*  boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 5,
+                            offset: Offset(0, 2),
+                          ),
+                        ],*/
+                ),
+                child: Center(
+                  child: Text(
+                    "Close".tr(context),
+                    style: TextStyle(color: Colors.white, fontSize: 14),
+                  ),
+                ),
+              ),
+            ),
+
+     /*
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor:
+              ),
+              child: Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),*/
+          ),
+        ],
+      ),
+    );
+  }
+
 
   Future<void> getData(DateTime date, int num) async {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -194,11 +404,14 @@ class _DietPlanScreenState extends State<DietPlanScreen> {
 
     var url = Uri.parse("${Config.baseURL}/diet/plan?date=$formattedDate");
     var request = http.MultipartRequest('GET', url);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String cookies = prefs.getString('cookies')!;
 
     // Add headers
     request.headers.addAll({
       'Authorization': "Bearer ${widget.Token}",
       'Accept': 'application/json',
+    'Cookie': cookies,
     });
 
     try {
@@ -208,6 +421,7 @@ class _DietPlanScreenState extends State<DietPlanScreen> {
       if (response.statusCode == 200) {
         setState(() {
           loginMap = json.decode(responseData);
+       //   print(loginMap);
           isLoading = false;
           print("num is $num");
           if(num >17){
@@ -216,26 +430,92 @@ class _DietPlanScreenState extends State<DietPlanScreen> {
 
             WidgetsBinding.instance.addPostFrameCallback((_) => _centerToday(num));// Set loading to false once data is fetched
           }
-
+          isLoading = false;
         });
+        OverlayLoadingProgress.stop();
       } else {
         print("Error: Status Code ${response.statusCode}");
         print("Response: $responseData");
         setState(() {
           isLoading = false;
         });
+        OverlayLoadingProgress.stop();
       }
     } catch (e) {
       print('Error: $e');
       setState(() {
         isLoading = false;
       });
+      OverlayLoadingProgress.stop();
     } finally {
      // OverlayLoadingProgress.stop();
     }
   }
 
-  Widget DateSelector(DateTime today ,
+  Future<void> getGuidlines() async {
+
+
+    /*   OverlayLoadingProgress.start(
+      context,
+      widget: Center(
+        child: Container(
+          color: Colors.transparent,
+          width: screenWidth, // MediaQuery accessed here
+          child: const AspectRatio(
+            aspectRatio: 1 / 3,
+            child: LoadingLogo(),
+          ),
+        ),
+      ),
+    );*/
+
+
+
+    var url = Uri.parse("${Config.baseURL}/diet/guidelines");
+    var request = http.MultipartRequest('GET', url);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String cookies = prefs.getString('cookies')!;
+
+    // Add headers
+    request.headers.addAll({
+      'Authorization': "Bearer ${widget.Token}",
+      'Accept': 'application/json',
+      'Cookie': cookies,
+    });
+
+    try {
+      var response = await request.send();
+      var responseData = await response.stream.bytesToString();
+      Map<String, dynamic> jsonData = json.decode(responseData);
+
+
+
+      if (response.statusCode == 200) {
+        setState(() {
+          Guidlines = jsonData['guidelines'] ?? '';
+          print("Guidlines  $Guidlines");
+
+
+
+        });
+      } else {
+        print("Error: Status Code ${response.statusCode}");
+        print("Response: $responseData");
+        setState(() {
+         // isLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Error: $e');
+      setState(() {
+      //  isLoading = false;
+      });
+    } finally {
+      // OverlayLoadingProgress.stop();
+    }
+  }
+
+/*  Widget DateSelector(DateTime today,
   List<DateTime> dates ){
    return SizedBox(
       height: 70,
@@ -267,7 +547,60 @@ class _DietPlanScreenState extends State<DietPlanScreen> {
         },
       ),
     );
+  }*/
+
+
+  Widget DateSelector(BuildContext context, DateTime today, List<DateTime> dates, String locale) {
+    return SizedBox(
+      height: 70,
+      child: ListView.builder(
+        controller: _scrollController,
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        itemCount: dates.length,
+        itemBuilder: (context, index) {
+          DateTime date = dates[index];
+          bool isSelected = date.year == selectedDate.year &&
+              date.month == selectedDate.month &&
+              date.day == selectedDate.day;
+          bool isDisabled = date.isBefore(today.subtract(Duration(days: 10)));
+
+          // Format day and month based on the locale
+          String day = DateFormat('d', locale).format(date);
+          String month = DateFormat('MMM', locale).format(date);
+
+          return GestureDetector(
+            onTap: !isDisabled
+                ? () {
+              OverlayLoadingProgress.start(
+                context,
+                widget: Center(
+                  child: Container(
+                    color: Colors.transparent,
+                    width: MediaQuery.of(context).size.width,
+                    child: const AspectRatio(
+                      aspectRatio: 1 / 3,
+                      child: LoadingLogo(),
+                    ),
+                  ),
+                ),
+              );
+              _onDateSelected(date, index);
+              getData(date, index);
+            }
+                : null, // Disable selection for past dates
+            child: _DateItem(
+              day: day,
+              month: month,
+              isSelected: isSelected,
+              isDisabled: isDisabled,
+            ),
+          );
+        },
+      ),
+    );
   }
+
 
   List<DateTime> _generateDates(DateTime today) {
     List<DateTime> dates = [];
@@ -299,7 +632,7 @@ class _DateItem extends StatelessWidget {
     Color textColor = const Color(0xFFD9D9D9);
 
     if (isSelected) {
-      backgroundColor = const Color(0xFFE42C29);
+      backgroundColor = const Color(0XFFFF0336);
       textColor = Colors.white;
     } else if (isDisabled) {
       backgroundColor = const Color(0xFF050505);
@@ -359,23 +692,23 @@ class _CalorieSummaryState extends State<CalorieSummary> {
   void initState() {
     super.initState();
     // Safely handle int/double values for percentage of calories
-    print(widget.data);
+   // print(widget.data);
     var caloriePercentage =
         widget.data['data']['macros']['consumed']['calories'];
-    print(caloriePercentage);
+   // print(caloriePercentage);
     valueNotifier = ValueNotifier(_parseToDouble(caloriePercentage));
   }
 
   // Helper method to handle dynamic data and return as double
   double _parseToDouble(dynamic value) {
     if (value is int) {
-      print("value 1 is $value");
+     // print("value 1 is $value");
       return value.toDouble();
     } else if (value is double) {
-      print("value 2 is $value");
+    //  print("value 2 is $value");
       return value;
     } else if (value is String) {
-      print("value 3 is $value");
+     // print("value 3 is $value");
       return double.tryParse(value) ?? 0.0;
     } else {
       return 0.0;
@@ -410,8 +743,8 @@ class _CalorieSummaryState extends State<CalorieSummary> {
                       fontFamily: 'Inter',
                     ),
                   ),
-                  const Text(
-                    "Consumed",
+                   Text(
+                    "Consumed".tr(context),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 13,
@@ -429,7 +762,7 @@ class _CalorieSummaryState extends State<CalorieSummary> {
                   backColor: Colors.black,
                   maxValue:
                       _parseToDouble(widget.data['data']['macros']['calories']),
-                  progressColors: const [Colors.red],
+                  progressColors: const [Color(0XFFFF0336)],
                   startAngle: 0,
                   backStrokeWidth: 16,
                   progressStrokeWidth: 16,
@@ -458,8 +791,8 @@ class _CalorieSummaryState extends State<CalorieSummary> {
                       fontFamily: 'Inter',
                     ),
                   ),
-                  const Text(
-                    "Remaining",
+                   Text(
+                    "Remaining".tr(context),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 13,
@@ -477,19 +810,20 @@ class _CalorieSummaryState extends State<CalorieSummary> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               _buildMacroInfo(
-                  'P',
+                  'P'.tr(context),
                   widget.data['data']['macros']['consumed']['proteins'],
                   widget.data['data']['macros']['proteins']),
               _buildMacroInfo(
-                  'C',
+                  'C'.tr(context),
                   widget.data['data']['macros']['consumed']['carbs'],
                   widget.data['data']['macros']['carbs']),
               _buildMacroInfo(
-                  'F',
+                  'F'.tr(context),
                   widget.data['data']['macros']['consumed']['fats'],
                   widget.data['data']['macros']['fats']),
             ],
-          )
+          ),
+
         ],
       ),
     );
@@ -498,13 +832,13 @@ class _CalorieSummaryState extends State<CalorieSummary> {
   Widget _buildMacroInfo(String label, dynamic value, dynamic total) {
     double parsedValue = _parseToDouble(value);
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
           '$label - ${parsedValue.toStringAsFixed(2)}/${total.toStringAsFixed(2)} g',
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 13,
+            fontSize: 8,
             fontWeight: FontWeight.w300,
             fontFamily: 'Inter',
           ),
@@ -521,7 +855,7 @@ class _CalorieSummaryState extends State<CalorieSummary> {
             widthFactor: parsedValue / total,
             child: Container(
               decoration: BoxDecoration(
-                color: const Color(0xFFE42C29),
+                color: const Color(0XFFFF0336),
                 borderRadius: BorderRadius.circular(7),
               ),
             ),
@@ -555,7 +889,7 @@ class MealPreview extends StatelessWidget {
           // Determine background color based on index
           Color backgroundColor = (index % 2 == 0)
               ? const Color(0xFF252525)
-              : const Color(0xFFE42C29); // Dark for odd indices
+              : const Color(0XFFFF0336); // Dark for odd indices
 
           // Determine background image
           String imageUrl = (index % 2 == 0)
@@ -675,7 +1009,7 @@ class MealBottomSheet extends StatelessWidget {
 
           // Title
           Text(
-            'Meal: ${meal['type']}',
+            'Meal:'.tr(context) +'${meal['type']}',
             style: TextStyle(
               color: Colors.white,
               fontSize: 20,
@@ -765,7 +1099,12 @@ class MealBottomSheet extends StatelessWidget {
                             Row(
                               children: [
                                 Text(
-                                  food['serve_quantity'].toString(),
+                                food['food_type'].toString() == "quantity"? food['quantity'].toString()
+                                   :  food['serve_quantity'].toString() ,
+
+
+
+                                //  food['serve_quantity'].toString(),
                                   style: TextStyle(
                                     color: Colors.grey[400],
                                     fontSize: 14,
@@ -773,7 +1112,8 @@ class MealBottomSheet extends StatelessWidget {
                                 ),
                                 SizedBox(width: 5,),
                                 Text(
-                                  food['serve_unit'].toString(),
+                                  food['food_type'].toString() == "quantity"
+                                      ? "g":  food['serve_unit'].toString(),
                                   style: TextStyle(
                                     color: Colors.grey[400],
                                     fontSize: 14,
@@ -847,6 +1187,13 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       backgroundColor: Colors.black,
       appBar: AppBar(
 
+        leading: IconButton(onPressed: (){
+
+        // For example, to navigate to the third tab
+
+          Navigator.pop(context);
+        }, icon: Icon(Icons.arrow_back, color: Colors.white,)),
+
         backgroundColor: Colors.black,
       ),
       body: SingleChildScrollView( // Wrap everything in SingleChildScrollView to avoid overflow
@@ -910,8 +1257,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                             ),
                             Expanded(
                               child: Slider(
-                                thumbColor: Colors.red,
-                                activeColor: Colors.red,
+                                thumbColor: Color(0XFFFF0336),
+                                activeColor: Color(0XFFFF0336),
                                 inactiveColor: Colors.white,
                                 value: _controller.value.position.inSeconds.toDouble(),
                                 min: 0,
@@ -930,6 +1277,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                 style: TextStyle(color: Colors.white),
                               ),
                             ),
+
                           ],
                         ),
                       ),
@@ -938,7 +1286,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                 ),
               )
             else
-              Center(child: SpinKitHourGlass(color: Colors.red),),
+              Center(child: SpinKitHourGlass(color: Color(0XFFFF0336)),),
 
             // Video controls (play, pause)
 
@@ -972,11 +1320,13 @@ void showFullScreenBottomSheet(BuildContext context, Map<String, dynamic> meal) 
 class NextMeal extends StatelessWidget {
   final List<dynamic> meals;
   final String timeZoneOffset;
+  final String selectedLanguage;
 
   const NextMeal({
     Key? key,
     required this.meals,
     required this.timeZoneOffset,
+    required this.selectedLanguage
   }) : super(key: key);
 
   @override
@@ -991,8 +1341,8 @@ class NextMeal extends StatelessWidget {
     if (nextMeal == null) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 27),
-        child: const Text(
-          'No upcoming meal',
+        child:  Text(
+          'No upcoming meal'.tr(context),
           style: TextStyle(
             color: Colors.white,
             fontSize: 24,
@@ -1007,7 +1357,11 @@ class NextMeal extends StatelessWidget {
     String mealType = nextMeal['type'];
     List<Map<String, dynamic>> foods = List<Map<String, dynamic>>.from(nextMeal['foods']);
     DateTime parsedMealTime = _parseMealTime(mealTime);
-    String formattedMealTime = DateFormat('hh:mm a').format(parsedMealTime);
+ //   String formattedMealTime = DateFormat('hh:mm a').format(parsedMealTime);
+    String formattedMealTime = DateFormat(
+      'hh:mm a',
+      selectedLanguage == 'ar' ? 'ar' : 'en',
+    ).format(parsedMealTime);
 
     return InkWell(
       onTap: (){
@@ -1019,7 +1373,7 @@ class NextMeal extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Next Meal [$formattedMealTime]',
+              'Next Meal'.tr(context)+" "+ '[$formattedMealTime]',
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 24,
@@ -1031,7 +1385,7 @@ class NextMeal extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: const Color(0xFFE42C29),
+                color: const Color(0XFFFF0336),
                 borderRadius: BorderRadius.circular(13),
               ),
               child: Column(

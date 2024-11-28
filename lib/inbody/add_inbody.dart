@@ -202,7 +202,7 @@ class _InbodyReportPageState extends State<InbodyReportPage> {
             ElevatedButton(
               onPressed: _submitForm,
               style: ElevatedButton.styleFrom(
-                primary: Colors.red,
+                backgroundColor: Color(0XFFFF0336),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -338,7 +338,7 @@ class _InbodyReportPageState extends State<InbodyReportPage> {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: submitData,
-              style: ElevatedButton.styleFrom(primary: Colors.red),
+              style: ElevatedButton.styleFrom(backgroundColor: Color(0XFFFF0336)),
               child: Text('Submit'),
             ),
           ],
@@ -357,16 +357,16 @@ class _InbodyReportPageState extends State<InbodyReportPage> {
           children: [
             ElevatedButton.icon(
               onPressed: () => pickImage(ImageSource.gallery, type),
-              icon: Icon(Icons.photo_library,color: Colors.red.withOpacity(0.7),),
+              icon: Icon(Icons.photo_library,color: Color(0XFFFF0336).withOpacity(0.7),),
               label: Text("Choose File"),
-              style: ElevatedButton.styleFrom(primary: Colors.grey[800]),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.grey[800]),
             ),
             SizedBox(width: 10),
             ElevatedButton.icon(
               onPressed: () => pickImage(ImageSource.camera, type),
-              icon: Icon(Icons.camera_alt,color: Colors.redAccent.withOpacity(0.7),),
+              icon: Icon(Icons.camera_alt,color: Color(0XFFFF0336)Accent.withOpacity(0.7),),
               label: Text("Take Photo"),
-              style: ElevatedButton.styleFrom(primary: Colors.grey[800]),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.grey[800]),
             ),
           ],
         ),
@@ -535,7 +535,7 @@ class _InbodyReportPageState extends State<InbodyReportPage> {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: submitData,
-              style: ElevatedButton.styleFrom(primary: Color(0xFFff0336),),
+              style: ElevatedButton.styleFrom(backgroundColor: Color(0xFFff0336),),
               child: Text('Submit'),
             ),
           ],
@@ -557,7 +557,7 @@ class _InbodyReportPageState extends State<InbodyReportPage> {
                 onPressed: () => pickAndCropImage(ImageSource.gallery, type),
                 icon: Icon(Icons.photo_library, color: Color(0xFFff0336)),
                 label: Text("Choose File"),
-                style: ElevatedButton.styleFrom(primary: Colors.grey[800],
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.grey[800],
                 ),
               ),
               SizedBox(width: 10),
@@ -565,7 +565,7 @@ class _InbodyReportPageState extends State<InbodyReportPage> {
                 onPressed: () => pickAndCropImage(ImageSource.camera, type),
                 icon: Icon(Icons.camera_alt, color: Color(0xFFff0336)),
                 label: Text("Take Photo"),
-                style: ElevatedButton.styleFrom(primary: Colors.grey[800]),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.grey[800]),
               ),
             ],
           ),

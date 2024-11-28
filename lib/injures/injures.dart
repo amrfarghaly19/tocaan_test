@@ -1,158 +1,11 @@
-/*
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:gymjoe/injures/add_medical_case.dart';
-import 'package:gymjoe/moves/fade.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
-import '../configre/globale_variables.dart';
-
-class Injures extends StatefulWidget {
-  final String Token;
-
-  Injures({Key? key, required this.Token}) : super(key: key);
-
-  @override
-  State<Injures> createState() => _InjuresState();
-}
-
-class _InjuresState extends State<Injures> {
-  List<dynamic> entries = [];
-
-  @override
-  void initState() {
-    super.initState();
-    fetchData();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-        title: Text("Injuries"),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: FloatingActionButton(
-              backgroundColor: Color(0xFFff0336),
-              onPressed: () {
-                Navigator.of(context).push(FadePageRoute(
-                  page: AddInjuryPage(Token:widget.Token),
-                ));
-
-
-                // Implement your add action here
-              },
-              child: Center(child: Icon(Icons.add, color: Colors.white)),
-            ),
-          )
-        ],
-      ),
-      body: SafeArea(
-        child: entries.isEmpty
-            ? Center(child: CircularProgressIndicator())
-            : ListView.builder(
-          padding: const EdgeInsets.all(12),
-          itemCount: entries.length,
-          itemBuilder: (context, index) {
-            final entry = entries[index];
-            final doctorNotes = entry['doctor_notes'] ?? 'No notes';
-            final reassessmentDate = entry['reassessment_date'] ?? 'N/A';
-            final createdAt = entry['created_at'] ?? 'N/A';
-
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: const Color(0xFF1F1F1F),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.red.withOpacity(0.1),
-                      blurRadius: 5,
-                      spreadRadius: 1,
-                    ),
-                  ],
-                ),
-                child: ExpansionTile(
-                  title: Text(
-                    "Doctor Notes",
-                    style: const TextStyle(color: Colors.white, fontSize: 18),
-                  ),
-                  subtitle: Text(
-                    "Date: $reassessmentDate",
-                    style: const TextStyle(color: Colors.grey, fontSize: 14),
-                  ),
-                  iconColor: Colors.white,
-                  collapsedIconColor: Colors.white,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Doctor Notes: $doctorNotes",
-                            style: const TextStyle(color: Colors.white, fontSize: 16),
-                          ),
-                          SizedBox(height: 10),
-                         */
-/* Text(
-                            "Reassessment Date: $reassessmentDate",
-                            style: const TextStyle(color: Colors.grey, fontSize: 14),
-                          ),
-                          Text(
-                            "Created At: $createdAt",
-                            style: const TextStyle(color: Colors.grey, fontSize: 14),
-                          ),*//*
-
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  Future<void> fetchData() async {
-    var url = Uri.parse("${Config.baseURL}/injures"); // Adjust the endpoint if needed
-    try {
-      final response = await http.get(
-        url,
-        headers: {
-          'Authorization': 'Bearer ${widget.Token}',
-          'Content-Type': 'application/json',
-        },
-      );
-      if (response.statusCode == 200) {
-        setState(() {
-          entries = jsonDecode(response.body)['data'];
-        });
-      } else {
-        print('Failed to fetch data');
-      }
-    } catch (e) {
-      print('Error: $e');
-    }
-  }
-}
-*/
-
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gymjoe/Auth/forget_password.dart';
 import 'package:gymjoe/injures/add_injures.dart';
+import 'package:gymjoe/localization/app_localization.dart';
 import 'package:gymjoe/moves/fade.dart';
+import 'package:gymjoe/theme/loading.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'dart:convert';
@@ -186,7 +39,7 @@ class _InjuresState extends State<Injures> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
-        title: Text("Injuries"),
+        title: Text("Injuries".tr(context)),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -214,12 +67,13 @@ class _InjuresState extends State<Injures> {
       ),
       body: SafeArea(
         child: entries.isEmpty
-            ? Center(child: CircularProgressIndicator())
+            ? Center(child: LoadingLogo())
             : ListView.builder(
           padding: const EdgeInsets.all(12),
           itemCount: entries.length,
           itemBuilder: (context, index) {
             final entry = entries[index];
+            final injure_name = entry['injure_name']??"Injury".tr(context);
             final doctorNotes = entry['doctor_notes'] ?? 'No notes';
             final reassessmentDate = entry['reassessment_date'] ?? 'N/A';
             final createdAt = entry['created_at'] ?? 'N/A';
@@ -245,11 +99,11 @@ class _InjuresState extends State<Injures> {
                 ),
                 child: ExpansionTile(
                   title: Text(
-                    "Doctor Notes",
+                    injure_name,
                     style: const TextStyle(color: Colors.white, fontSize: 18),
                   ),
                   subtitle: Text(
-                    "Date: $reassessmentDate",
+                    "Date:".tr(context)+" $reassessmentDate",
                     style: const TextStyle(color: Colors.grey, fontSize: 14),
                   ),
                   iconColor: Colors.white,
@@ -261,7 +115,7 @@ class _InjuresState extends State<Injures> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Doctor Notes: $doctorNotes",
+                            "Doctor Notes:".tr(context) +"$doctorNotes",
                             style: const TextStyle(color: Colors.white, fontSize: 16),
                           ),
                           SizedBox(height: 10),

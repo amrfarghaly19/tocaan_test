@@ -1,4 +1,4 @@
-
+import 'package:gymjoe/localization/app_localization.dart';
 import 'package:gymjoe/theme/loading.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -12,6 +12,7 @@ import 'package:overlay_loading_progress/overlay_loading_progress.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../configre/globale_variables.dart';
+import '../localization/change_language.dart';
 import '../theme/widgets/bottombar.dart';
 
 class LoginPage extends StatefulWidget {
@@ -26,19 +27,38 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController phonenumber = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   late SharedPreferences logindata;
+  String Token = "";
 
   @override
   Widget build(BuildContext context) {
+  //  phonenumber.text = "+203510012934";
+    // passwordController.text = "+203510012934";
+
     return Scaffold(
-      backgroundColor:  Colors.black,
+      backgroundColor: Colors.black,
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => LanguageSelect(
+                  Token: "",
+                ),
+              );
+            },
+            icon: Icon(Icons.language_outlined)),
+      ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 22.0, vertical: 40.0),
+          padding: const EdgeInsets.symmetric(horizontal: 22.0, vertical: 10.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 143),
+              const SizedBox(height: 90),
               Hero(
                 tag: 'logo',
                 child: Image.asset(
@@ -47,9 +67,9 @@ class _LoginPageState extends State<LoginPage> {
                   fit: BoxFit.contain,
                 ),
               ),
-              const SizedBox(height: 26),
-              const Text(
-                'Sign in now to get access to personalized workouts and achieve your fitness goals',
+              const SizedBox(height: 30),
+              Text(
+                'sign_message'.tr(context),
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20,
@@ -58,30 +78,27 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 23),
-               PhoneInput(),
+              const SizedBox(height: 30),
+              PhoneInput(),
               const SizedBox(height: 19),
-               PasswordInput(),
+              PasswordInput(),
               const SizedBox(height: 16),
-               SignInButton(),
+              SignInButton(),
               const SizedBox(height: 25),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.of(context).push(FadePageRoute(
-                      page: ResetPasswordScreen(),
-                    ));
-                       },
-                  child: const Text(
-                    'Forget Password?',
-                    style: TextStyle(
-                      color: Color(0xFFDADADA),
-                      fontSize: 19,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Inter',
-                      decoration: TextDecoration.underline,
-                    ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).push(FadePageRoute(
+                    page: ResetPasswordScreen(),
+                  ));
+                },
+                child: Text(
+                  'Forgot Password'.tr(context),
+                  style: TextStyle(
+                    color: Color(0xFFDADADA),
+                    fontSize: 19,
+                    fontWeight: FontWeight.w500,
+                    fontFamily: 'Inter',
+                    decoration: TextDecoration.none,
                   ),
                 ),
               ),
@@ -92,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget PhoneInput(){
+  Widget PhoneInput() {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(9),
@@ -107,28 +124,27 @@ class _LoginPageState extends State<LoginPage> {
             height: 27,
             color: Colors.white,
           ),
-
           const SizedBox(width: 11),
           Container(
             width: 3,
             height: 35,
             decoration: BoxDecoration(
-              border: Border.all(color: const Color(0xFFE42C29), width: 3),
+              border: Border.all(color: const Color(0XFFFF0336), width: 3),
             ),
           ),
           const SizedBox(width: 11),
           Expanded(
             child: TextFormField(
               controller: phonenumber,
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
                 fontFamily: 'Inter',
               ),
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 border: InputBorder.none,
-                hintText: 'Enter your phone number',
+                hintText: 'Enter your Phone Number'.tr(context),
                 hintStyle: TextStyle(color: Colors.white54),
               ),
               keyboardType: TextInputType.phone,
@@ -138,8 +154,6 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-
-
 
   Widget PasswordInput() {
     return Container(
@@ -156,13 +170,12 @@ class _LoginPageState extends State<LoginPage> {
             height: 27,
             color: Colors.white,
           ),
-
           const SizedBox(width: 14),
           Container(
             width: 3,
             height: 35,
             decoration: BoxDecoration(
-              border: Border.all(color: const Color(0xFFE42C29), width: 3),
+              border: Border.all(color: const Color(0XFFFF0336), width: 3),
             ),
           ),
           const SizedBox(width: 14),
@@ -176,15 +189,15 @@ class _LoginPageState extends State<LoginPage> {
                 fontWeight: FontWeight.w500,
                 fontFamily: 'Inter',
               ),
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 border: InputBorder.none,
-                hintText: 'Enter your password',
+                hintText: 'Enter your password'.tr(context),
                 hintStyle: TextStyle(color: Colors.white54),
               ),
             ),
           ),
           IconButton(
-            icon:   SvgPicture.asset(
+            icon: SvgPicture.asset(
               'assets/eyeoff.svg',
               width: 27,
               height: 27,
@@ -205,21 +218,21 @@ class _LoginPageState extends State<LoginPage> {
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () {
-         /* Navigator.of(context).push(FadePageRoute(
+          /* Navigator.of(context).push(FadePageRoute(
             page: Home(),
           ));*/
 
           OnTapLogin();
         },
         style: ElevatedButton.styleFrom(
-          primary: const Color(0xFFE42C29),
+          backgroundColor: const Color(0XFFFF0336),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(9),
           ),
           padding: const EdgeInsets.symmetric(vertical: 15),
         ),
-        child: const Text(
-          'Sign In',
+        child: Text(
+          'sign_in'.tr(context),
           style: TextStyle(
             color: Colors.white,
             fontSize: 21,
@@ -231,9 +244,9 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-
   Future<void> OnTapLogin() async {
-    OverlayLoadingProgress.start(context,
+    OverlayLoadingProgress.start(
+      context,
       widget: Center(
         child: Container(
           color: Colors.transparent,
@@ -245,6 +258,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+    await _loadSelectedLanguage();
 
     var url = Uri.parse("${Config.baseURL}/login");
     var request = http.MultipartRequest('POST', url);
@@ -256,12 +270,10 @@ class _LoginPageState extends State<LoginPage> {
 
     // Add fields
 
-
-
-    request.fields['phone'] = "+203510012934";
-    request.fields['password'] = "+203510012934";
-  //  request.fields['phone'] = phonenumber.text;
-  //  request.fields['password'] = passwordController.text;
+    request.fields['phone'] = phonenumber.text;
+    request.fields['password'] = passwordController.text;
+    //  request.fields['phone'] = phonenumber.text;
+    //  request.fields['password'] = passwordController.text;
 
     try {
       // Call request.send() only once
@@ -274,23 +286,33 @@ class _LoginPageState extends State<LoginPage> {
 
         // Check if loginMap is not null and has the 'access_token' key
         if (loginMap != null && loginMap.containsKey('access_token')) {
-          String accessToken = loginMap['access_token']; // Safely retrieve the access token
+          String accessToken =
+              loginMap['access_token']; // Safely retrieve the access token
           SharedPreferences prefs = await SharedPreferences.getInstance();
 
           print('Access Token: $accessToken'); // Debugging line to print token
 
           // Store the token in shared preferences
           prefs.setBool('rememberMe', true);
+          prefs.setBool('tutorial', true);
           prefs.setString('Token', accessToken);
           prefs.setBool('LogedIn', true);
+          setState(() {
+            Token = accessToken;
+          });
+          await _updateLanguage();
 
-          _showSnackBar(loginMap['message'] ?? 'Login successful!', Colors.blue);
-          Navigator.of(context).push(FadePageRoute(
-            page: Bottombar(Token: accessToken),
-          ));
+          _showSnackBar(
+              loginMap['message'] ?? 'Login successful!'.tr(context), Color(0xFF1F1F1F));
+          Navigator.of(context).pushAndRemoveUntil(
+            FadePageRoute(
+              page: Bottombar(Token: accessToken),
+            ),
+            (Route<dynamic> route) => false,
+          );
         } else {
           // Handle case when access_token is missing
-          _showSnackBar('Error: Access token not found', Colors.red);
+          _showSnackBar('Error: Access token not found', Color(0XFFFF0336));
         }
 
         OverlayLoadingProgress.stop();
@@ -298,25 +320,47 @@ class _LoginPageState extends State<LoginPage> {
         var responseData = await response.stream.bytesToString();
         var loginMap = json.decode(responseData);
         OverlayLoadingProgress.stop();
-        _showSnackBar(loginMap['message'] ?? 'An error occurred.', Colors.red);
+        _showSnackBar(
+            loginMap['message'] ?? 'An error occurred.', Color(0XFFFF0336));
       }
     } catch (e) {
       print('Error: $e');
       OverlayLoadingProgress.stop();
-      _showSnackBar('An error occurred. Please try again.', Colors.red);
+      _showSnackBar('An error occurred. Please try again.', Color(0XFFFF0336));
     }
   }
 
+  String selectedLanguage = '';
 
+  Future<void> _loadSelectedLanguage() async {
+    final savedLanguage = await AppLocalization.getLanguage();
+    if (mounted) {
+      setState(() {
+        selectedLanguage = savedLanguage ?? 'en';
+      });
+    }
+  }
+
+  Future<void> _updateLanguage() async {
+    var url = Uri.parse("${Config.baseURL}/change-language/$selectedLanguage");
+    var request = http.MultipartRequest('POST', url);
+
+    // Add header
+    request.headers.addAll(
+        {'Accept': 'application/json', 'Authorization': 'Bearer ${Token}'});
+    var response2 = await request.send();
+    var responseData = await response2.stream.bytesToString();
+    var loginMap = json.decode(responseData);
+
+    print(loginMap);
+  }
 
   void _showSnackBar(String message, Color color) {
     print("SnakBar");
     final snackBar = SnackBar(
-      content: Text(message),
+      content: Text(message,style: TextStyle(color: Colors.white),),
       backgroundColor: color,
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
-
-

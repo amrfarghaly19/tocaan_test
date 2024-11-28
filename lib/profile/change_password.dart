@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gymjoe/Auth/forget_password.dart';
+import 'package:gymjoe/localization/app_localization.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:overlay_loading_progress/overlay_loading_progress.dart';
@@ -26,127 +28,136 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: Text("Change Password"),
+        leading: IconButton(onPressed: (){
+          Navigator.pop(context);
+        }, icon: Icon(Icons.arrow_back, color: Colors.white,)),
+        title: Text("Change Password".tr(context),style: TextStyle(color: Colors.white,
+
+
+        ),),
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Current Password Field
-            Text("Current Password", style: TextStyle(color: Colors.grey)),
-            SizedBox(height: 8),
-            TextField(
-              controller: _currentPasswordController,
-              obscureText: _isObscured,
-              style: TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Color(0xFF1F1F1F),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide.none,
-                ),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _isObscured ? Icons.visibility_off : Icons.visibility,
-                    color: Colors.grey,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _isObscured = !_isObscured;
-                    });
-                  },
-                ),
-              ),
-            ),
-            SizedBox(height: 16),
-
-            // New Password Field
-            Text("New Password", style: TextStyle(color: Colors.grey)),
-            SizedBox(height: 8),
-            TextField(
-              controller: _newPasswordController,
-              obscureText: _isObscured2,
-              style: TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Color(0xFF1F1F1F),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide.none,
-                ),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _isObscured2 ? Icons.visibility_off : Icons.visibility,
-                    color: Colors.grey,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _isObscured2 = !_isObscured2;
-                    });
-                  },
-                ),
-              ),
-            ),
-            SizedBox(height: 16),
-
-            // Confirm Password Field
-            Text("Confirm Password", style: TextStyle(color: Colors.grey)),
-            SizedBox(height: 8),
-            TextField(
-              controller: _confirmPasswordController,
-    obscureText: _isObscured3,
-              style: TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Color(0xFF1F1F1F),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide.none,
-                ),
-    suffixIcon: IconButton(
-    icon: Icon(
-      _isObscured3 ? Icons.visibility_off : Icons.visibility,
-    color: Colors.grey,
-    ),
-    onPressed: () {
-    setState(() {
-      _isObscured3 = !_isObscured3;
-    });
-    },
-    ),
-              ),
-            ),
-
-            SizedBox(height: 24),
-
-            // Change Password Button
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  // Implement password change logic here
-                  _submitData();
-                },
-                style: ElevatedButton.styleFrom(
-                  primary: Color(0xFFff0336),
-                  padding: EdgeInsets.symmetric(vertical: 16, horizontal: 32),
-                  shape: RoundedRectangleBorder(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Current Password Field
+              Text("Current Password".tr(context), style: TextStyle(color: Colors.grey)),
+              SizedBox(height: 8),
+              TextField(
+                controller: _currentPasswordController,
+                obscureText: _isObscured,
+                style: TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Color(0xFF1F1F1F),
+                  border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide.none,
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _isObscured ? Icons.visibility_off : Icons.visibility,
+                      color: Colors.grey,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isObscured = !_isObscured;
+                      });
+                    },
                   ),
                 ),
-                child: Text(
-                  "Change Password",
-                  style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+              SizedBox(height: 16),
+
+              // New Password Field
+              Text("New Password".tr(context), style: TextStyle(color: Colors.grey)),
+              SizedBox(height: 8),
+              TextField(
+                controller: _newPasswordController,
+                obscureText: _isObscured2,
+                style: TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Color(0xFF1F1F1F),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide.none,
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _isObscured2 ? Icons.visibility_off : Icons.visibility,
+                      color: Colors.grey,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isObscured2 = !_isObscured2;
+                      });
+                    },
+                  ),
                 ),
               ),
-            ),
-          ],
+              SizedBox(height: 16),
+
+              // Confirm Password Field
+              Text("Confirm Password".tr(context), style: TextStyle(color: Colors.grey)),
+              SizedBox(height: 8),
+              TextField(
+                controller: _confirmPasswordController,
+              obscureText: _isObscured3,
+                style: TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Color(0xFF1F1F1F),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide.none,
+                  ),
+              suffixIcon: IconButton(
+              icon: Icon(
+                _isObscured3 ? Icons.visibility_off : Icons.visibility,
+              color: Colors.grey,
+              ),
+              onPressed: () {
+              setState(() {
+                _isObscured3 = !_isObscured3;
+              });
+              },
+              ),
+                ),
+              ),
+
+              SizedBox(height: 24),
+
+              // Change Password Button
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Implement password change logic here
+                    _submitData();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFFff0336),
+                    padding: EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Text(
+                    "Change Password".tr(context),
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -157,7 +168,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
 
     if (_currentPasswordController.text.isEmpty || _newPasswordController.text.isEmpty || _confirmPasswordController.text.isEmpty ) {
       print("Please ensure all required fields are filled.");
-      _showSnackBar("Please ensure all required fields are filled" ?? 'Login successful!', Colors.red);
+      _showSnackBar("Please ensure all required fields are filled" ?? 'Login successful!', Color(0XFFFF0336));
       return;
     }
     try {
@@ -190,7 +201,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
       print(answer);
 
       if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Password Has been Changed")));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Password Has been Changed".tr(context))));
         OverlayLoadingProgress.stop();
         Navigator.pop(context, 'refresh');
 
@@ -202,7 +213,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     } catch (e) {
       print("Error: $e");
       OverlayLoadingProgress.stop();
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("An error occurred")));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("An error occurred".tr(context))));
     }
   }
   void _showSnackBar(String message, Color color) {

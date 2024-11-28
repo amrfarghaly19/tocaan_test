@@ -1,6 +1,9 @@
 
 
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:gymjoe/Auth/forget_password.dart';
+import 'package:gymjoe/localization/app_localization.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../configre/globale_variables.dart';
@@ -34,7 +37,13 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: Text("Personal Information"),
+
+        leading: IconButton(onPressed: (){
+          Navigator.pop(context);
+        }, icon: Icon(Icons.arrow_back, color: Colors.white,)),
+        title: Text("Personal Information".tr(context),style: TextStyle(color: Colors.white,),),
+
+
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
@@ -45,9 +54,9 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Country Dropdown
-            Text("Country", style: TextStyle(color: Colors.grey)),
+            Text("Country".tr(context), style: TextStyle(color: Colors.grey)),
             SizedBox(height: 8),
-            DropdownButtonFormField<String>(
+          /*  DropdownButtonFormField<String>(
               value: _selectedCountry,
               onChanged: (value) {
                 setState(() {
@@ -70,11 +79,59 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                 ),
               ),
               dropdownColor: Color(0xFF1F1F1F),
+            ),*/
+
+          DropdownSearch<Map<String, dynamic>>(
+            items: countries, // Pass the list of countries
+            selectedItem: countries.firstWhere(
+                    (country) => country['id'].toString() == _selectedCountry,
+                orElse: () => {}),
+            itemAsString: (Map<String, dynamic> country) => country['name'] ?? '',
+            compareFn: (item, selectedItem) => item['id'] == selectedItem?['id'], // Custom comparison function
+            onChanged: (value) {
+              setState(() {
+                _selectedCountry = value?['id'].toString(); // Update the selected country ID
+              });
+            },
+            popupProps: PopupProps.menu(
+              showSearchBox: true, // Enable search
+              searchFieldProps: TextFieldProps(
+                decoration: InputDecoration(
+                  labelText: "Search".tr(context),
+                  prefixIcon: Icon(Icons.search, color: Colors.grey),
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.close, color: Colors.grey),
+                    onPressed: () {
+                      // Clear search box logic (if needed)
+                    },
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                ),
+              ),
+              showSelectedItems: true,
             ),
-            SizedBox(height: 16),
+            dropdownDecoratorProps: DropDownDecoratorProps(
+              dropdownSearchDecoration: InputDecoration(
+
+                filled: true,
+                fillColor: Color(0xFF1F1F1F),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(24),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+            dropdownButtonProps: DropdownButtonProps(
+              icon: Icon(Icons.arrow_drop_down, color: Colors.white),
+            ),
+          ),
+
+          SizedBox(height: 16),
 
             // Address Field
-            Text("Address", style: TextStyle(color: Colors.grey)),
+            Text("Address".tr(context), style: TextStyle(color: Colors.grey)),
             SizedBox(height: 8),
             TextField(
               controller: _addressController,
@@ -91,7 +148,7 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
             SizedBox(height: 16),
 
             // Birthday Field with Date Picker
-            Text("Birthday", style: TextStyle(color: Colors.grey)),
+            Text("Birthday".tr(context), style: TextStyle(color: Colors.grey)),
             SizedBox(height: 8),
             TextField(
               controller: _birthdayController,
@@ -111,7 +168,7 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
             SizedBox(height: 16),
 
             // Job Description Field
-            Text("Job Description", style: TextStyle(color: Colors.grey)),
+            Text("Job Description".tr(context), style: TextStyle(color: Colors.grey)),
             SizedBox(height: 8),
             TextField(
               controller: _jobDescriptionController,
@@ -135,14 +192,14 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                   updateProfile();
                 },
                 style: ElevatedButton.styleFrom(
-                  primary: Color(0xFFff0336),
+                  backgroundColor: Color(0xFFFF0336),
                   padding: EdgeInsets.symmetric(vertical: 12, horizontal: 32),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(24),
                   ),
                 ),
                 child: Text(
-                  "Save",
+                  "Save".tr(context),
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
               ),
@@ -257,8 +314,10 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
       "country_id": _selectedCountry,
       "job_description": _jobDescriptionController.text,
       "address": _addressController.text,
-      "have_disease": true,
-      "have_injures": true,
+      "wakeup_time": allData?['wakeup_time'] ?? "", // Time Input H:i:s
+      "sleep_time": allData?['sleep_time'] ?? "",
+      "have_disease": false,
+      "have_injures": false,
     };
 
     try {
@@ -275,6 +334,8 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
         print("Profile updated successfully.");
         Navigator.pop(context);
       } else {
+        final data = jsonDecode(response.body);
+        print(data);
         print("Failed to update profile. Status code: ${response.statusCode}");
         print("Response body: ${response.body}");
       }
